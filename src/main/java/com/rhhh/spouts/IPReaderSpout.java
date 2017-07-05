@@ -69,6 +69,7 @@ public class IPReaderSpout implements IRichSpout {
         while (line == null) {
             open_next_file();
         }
+        // todo: fix storm to randomly split input
         this.collector.emit(streams.get(current_stream), new Values(line));
         current_stream = (current_stream + 1) % 4;
         counter++;
@@ -118,6 +119,7 @@ public class IPReaderSpout implements IRichSpout {
             file_reader = new FileReader(Ip_source_files[current_file_index]);
             buffer = new BufferedReader(file_reader);
             line = buffer.readLine();
+            current_file_index++;
         } catch (FileNotFoundException e) {
             // todo: Should we ignore this or give a solution that is more projecting to user?
             System.out.println("===> Could not open txt file: " + Ip_source_files[current_file_index]
@@ -131,5 +133,6 @@ public class IPReaderSpout implements IRichSpout {
             current_file_index++;
             open_next_file();
         }
+
     }
 }

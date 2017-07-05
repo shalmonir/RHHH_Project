@@ -85,6 +85,7 @@ public class RHHH implements Serializable {
     private Map<String,Long> getHeavyHitters(int level){
         Map<String,Long> hhlist = new HashMap<String, Long>();
         Map<String,Long> levelMap = dbMap.get(level);
+        sortMap(levelMap);
         if (level == 4){
             for(Map.Entry<String,Long> entry : levelMap.entrySet()){
                 if(entry.getValue() >= N * theta){
@@ -117,7 +118,7 @@ public class RHHH implements Serializable {
             else
             {
                 //Assuming map is sorted from the most HH to the least HH
-                break;
+                continue;
             }
         }
         Map<String,Long> tmp = new HashMap<>();

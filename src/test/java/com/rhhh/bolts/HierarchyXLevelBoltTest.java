@@ -47,7 +47,7 @@ public class HierarchyXLevelBoltTest {
         verify(collector).ack(normalTuple);
     }
 
-    @Test
+/*    @Test
     public void CountTupleCorrectly() {
         HierarchyXLevelBolt bolt = new HierarchyXLevelBolt(4);
         OutputCollector collector = mock(OutputCollector.class);
@@ -61,7 +61,7 @@ public class HierarchyXLevelBoltTest {
         for(Map.Entry<String, Integer> entry : bolt.getCounters().entrySet()){
             System.out.println(entry.getKey()+" : " + entry.getValue());
         }
-    }
+    }*/
 
     @Test
     public void parsingCorrectly() {
