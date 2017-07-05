@@ -84,7 +84,7 @@ public class IPReaderSpout implements IRichSpout {
     public void close() {
         Date date = new Date();
         System.out.println("===> Spout Finish time = " + dateFormat.format(date));
-        System.out.println("===> IPReaderSpout Closed pcapFile. Counter = " + counter);
+        System.out.println("===> IPReaderSpout Closed Input File. Counter = " + counter);
         // todo: temporary busy wait, find a better solution
         //while (1 > 0){}
         System.exit(0);

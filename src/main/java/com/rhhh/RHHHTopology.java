@@ -18,10 +18,11 @@ public class RHHHTopology {
         builder.setBolt("level-2", new HierarchyXLevelBolt(2)).shuffleGrouping("ip-reader-spout", "StreamForL2");
         builder.setBolt("level-3", new HierarchyXLevelBolt(3)).shuffleGrouping("ip-reader-spout", "StreamForL3");
         builder.setBolt("level-4", new HierarchyXLevelBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
+        RHHH.getInstance().setTheta(0.01);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
-//        Thread.sleep(10000);
-//        cluster.shutdown();
+        Thread.sleep(10000);
+        cluster.shutdown();
     }
 
 }
