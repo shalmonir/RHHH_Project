@@ -29,7 +29,7 @@ public class RHHH implements Serializable {
      * @param theta - new value for threshold parameter
      */
     public void setTheta(double theta){
-        if(theta < 0 || query_frequency < 0){
+        if(theta < 0){
             // todo: write error to log
             return;
         }
@@ -37,7 +37,7 @@ public class RHHH implements Serializable {
     }
 
     public void setQuery_frequency(int query_frequency){
-        if(query_frequency < 0 || query_frequency < 0){
+        if(query_frequency < 0){
             // todo: write error to log
             return;
         }
