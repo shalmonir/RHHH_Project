@@ -2,6 +2,9 @@
 package com.rhhh;
 
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -15,10 +18,11 @@ public class RHHH implements Serializable {
 
     private static RHHH manager = new RHHH();
     Map<Integer, Map<String,Long>> dbMap;
-    private double theta = 0.2; // todo: get as input
+    private double theta = 0.2; // default value
     private int epsilon = 1000; // todo: get as input + build tables accordingly
-    private int query_frequency = 1000; // todo: get as input + design accordingly
+    private int query_frequency = 1000; // default value
     int N = 0; // the sum of all ip addresses counted by the manager
+    private Logger RHHH_log = LoggerFactory.getLogger(RHHH.class);
 
     public static RHHH getInstance(){
         return manager;
@@ -29,16 +33,16 @@ public class RHHH implements Serializable {
      * @param theta - new value for threshold parameter
      */
     public void setTheta(double theta){
-        if(theta < 0 || query_frequency < 0){
-            // todo: write error to log
+        if(theta < 0){
+            RHHH_log.error("Illegal theta value - most be positive double");
             return;
         }
         this.theta = theta;
     }
 
     public void setQuery_frequency(int query_frequency){
-        if(query_frequency < 0 || query_frequency < 0){
-            // todo: write error to log
+        if(query_frequency < 0){
+            RHHH_log.error("Illegal frequency value - most be positive integer");
             return;
         }
         this.query_frequency = query_frequency;
@@ -83,7 +87,7 @@ public class RHHH implements Serializable {
     }
 
     private Map<String,Long> getHeavyHitters(int level){
-        Map<String,Long> hhlist = new HashMap<String, Long>();
+        Map<String,Long> hhlist = new HashMap<>();
         Map<String,Long> levelMap = dbMap.get(level);
         if (level == 4){
             for(Map.Entry<String,Long> entry : levelMap.entrySet()){
@@ -96,8 +100,7 @@ public class RHHH implements Serializable {
                     break;
                 }
             }
-//            return hhlist; // todo: replace that call in normal one as soon as Saving-Space is integrated
-            return sortMap(hhlist);
+            return sortMap(hhlist); // todo: replace that call in normal one as soon as Saving-Space is integrated
         }
         Map<String,Long> prevHH = getHeavyHitters(level+1);
         for (Map.Entry<String,Long> entry : levelMap.entrySet()){
@@ -116,7 +119,6 @@ public class RHHH implements Serializable {
             }
             else
             {
-                //Assuming map is sorted from the most HH to the least HH
                 break;
             }
         }
@@ -144,9 +146,10 @@ public class RHHH implements Serializable {
         if(HH_set.isEmpty()){
             return;
         }
-        System.out.print("~~~~ The HH in network traffic: \n");
+        String hh_list = "";
         for(String hh : HH_set)
-            System.out.print(hh + "\n");
+            hh_list = hh_list + hh + "\n";
+        RHHH_log.info("The HH in network traffic: \n" + hh_list + "\n" + "===== END =====");
     }
 
     public static void main(String a[]){
@@ -160,7 +163,6 @@ public class RHHH implements Serializable {
      */
    private static Map<String, Long> sortMap(Map<String, Long> map){
        List list = new LinkedList(map.entrySet());
-       // Defined Custom Comparator here
        Collections.sort(list, new Comparator() {
            public int compare(Object o1, Object o2) {
                return (((Comparable) ((Map.Entry) (o2)).getValue())
@@ -173,5 +175,12 @@ public class RHHH implements Serializable {
            sortedHashMap.put(entry.getKey(), entry.getValue());
        }
        return sortedHashMap;
+   }
+
+   public void resetStatsForTesting(){
+       this.N = 0;
+       for (int i=1; i<=4;i++){
+           dbMap.put(i,new HashMap());
+       }
    }
 }
