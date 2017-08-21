@@ -27,7 +27,7 @@ public class RHHHTopology {
         RHHH.getInstance().setQuery_frequency(100);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
-        Thread.sleep(10000);
+        Thread.sleep(100000);
 
         long endTime = System.currentTimeMillis();
         topology_log.info("RHHHTopology Finished. Total time taken = " + (endTime - startTime));

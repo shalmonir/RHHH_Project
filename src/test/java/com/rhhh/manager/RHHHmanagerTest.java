@@ -1,6 +1,7 @@
 package com.rhhh.manager;
 
 import com.rhhh.RHHH;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.*;
@@ -10,7 +11,7 @@ import java.util.*;
  * ISSUE - testing singleton is very problematic
  */
 public class RHHHmanagerTest {
-    @Before
+    @After
     public void beforeTestMethod() {
         RHHH.getInstance().resetStatsForTesting();
     }
