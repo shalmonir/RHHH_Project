@@ -1,8 +1,6 @@
 package com.rhhh.spouts;
 
 import org.apache.storm.spout.SpoutOutputCollector;
-import org.junit.Rule;
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
 import org.testng.annotations.Test;
 
 import java.io.*;
@@ -22,16 +20,16 @@ public class IPReaderSpoutTest {
     }
 
     // todo: implement in a way that unit test run
-    @Rule
-    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
-    @Test
-    public void InvalidFileName(){
-        exit.expectSystemExitWithStatus(1);
-        SpoutOutputCollector collector = mock(SpoutOutputCollector.class);
-        IPReaderSpout spout = new IPReaderSpout(true, new String[] {"not_existing_file.txt"});
-// todo: find solution for exit
-//        spout.open(new HashMap(), null, collector);
-    }
+//    @Rule
+//    public final ExpectedSystemExit exit = ExpectedSystemExit.none();
+//    @Test
+//    public void InvalidFileName(){
+//        exit.expectSystemExitWithStatus(1);
+//        SpoutOutputCollector collector = mock(SpoutOutputCollector.class);
+//        IPReaderSpout spout = new IPReaderSpout(true, new String[] {"not_existing_file.txt"});
+//// todo: find solution for exit
+////        spout.open(new HashMap(), null, collector);
+//    }
 
     @Test
     public void FileInputTest() throws IOException {
