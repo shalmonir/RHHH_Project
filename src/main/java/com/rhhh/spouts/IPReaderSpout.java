@@ -92,7 +92,8 @@ public class IPReaderSpout implements IRichSpout {
         Date date = new Date();
         spout_log.info("Spout Finish time = " + dateFormat.format(date));
         spout_log.info("IPReaderSpout Closed Input File. Counter = " + counter);
-        System.exit(1);
+        while(true){}
+//        System.exit(1);
     }
 
     public boolean isDistributed() {

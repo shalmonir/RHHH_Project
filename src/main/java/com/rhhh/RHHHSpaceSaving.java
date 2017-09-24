@@ -2,6 +2,7 @@
 package com.rhhh;
 
 
+import com.clearspring.analytics.stream.Counter;
 import com.clearspring.analytics.stream.StreamSummary;
 
 import java.io.Serializable;
@@ -13,16 +14,16 @@ import java.util.*;
  */
 
 
-public class RHHH implements Serializable {
+public class RHHHSpaceSaving implements Serializable {
 
-    private static RHHH manager = new RHHH();
-    Map<Integer, Map<String,Long>> dbMap;
+    private static RHHHSpaceSaving manager = new RHHHSpaceSaving();
+    Map<Integer, StreamSummary<String>> dbMap;
     private double theta = 0.2; // todo: get as input
     private int epsilon = 1000; // todo: get as input + build tables accordingly
     private int query_frequency = 1000; // todo: get as input + design accordingly
     int N = 0; // the sum of all ip addresses counted by the manager
 
-    public static RHHH getInstance(){
+    public static RHHHSpaceSaving getInstance(){
         return manager;
     }
 
@@ -46,37 +47,10 @@ public class RHHH implements Serializable {
         this.query_frequency = query_frequency;
     }
 
-    private RHHH(){
+    private RHHHSpaceSaving(){
         dbMap = new HashMap();
         for (int i=1; i<=4;i++){
-            dbMap.put(i,new HashMap());
-        }
-    }
-
-    /**
-     * update new ip record in the general data structure
-     * @param level - the HHH level to update
-     * @param srcAdd - the partial or full ip address
-     */
-    public void addEntryOnLevel(int level,String srcAdd){
-        N++;
-        Map<String,Long> levelDb = dbMap.get(level);
-        incrementEntryByOne(levelDb, srcAdd, level);
-        if(N % query_frequency == 0)
-            this.queryHeavyHitters();
-    }
-
-    /**
-     * given a ip updates the counter with respect to the HHH level
-     * @param levelDb - the data structure (Space-saving) of the correct level
-     * @param srcAdd - the partial or full ip address
-     * @param level - the HHH level to update
-     */
-    private void incrementEntryByOne(Map<String, Long> levelDb, String srcAdd, int level) {
-        if (levelDb.containsKey(srcAdd)){
-            levelDb.put(srcAdd, levelDb.get(srcAdd) + 1);
-        } else {
-            levelDb.put(srcAdd, (long)1);
+            dbMap.put(i,new StreamSummary<String>(epsilon));
         }
     }
 
@@ -85,12 +59,12 @@ public class RHHH implements Serializable {
     }
 
     private Map<String,Long> getHeavyHitters(int level){
-        Map<String,Long> hhlist = new HashMap<String, Long>();
-        Map<String,Long> levelMap = dbMap.get(level);
+        Map<String,Long> hhlist = new HashMap<>();
+        StreamSummary<String> levelMap = dbMap.get(level);
         if (level == 4){
-            for(Map.Entry<String,Long> entry : levelMap.entrySet()){
-                if(entry.getValue() >= N * theta){
-                    hhlist.put(entry.getKey(), entry.getValue());
+            for(Counter<String> entry : levelMap.topK(epsilon)){
+                if(entry.getCount() >= N * theta){
+                    hhlist.put(entry.getItem(), entry.getCount());
                 }
                 else
                 {
@@ -102,10 +76,10 @@ public class RHHH implements Serializable {
             return sortMap(hhlist);
         }
         Map<String,Long> prevHH = getHeavyHitters(level+1);
-        for (Map.Entry<String,Long> entry : levelMap.entrySet()){
+        for (Counter<String> entry : levelMap.topK(epsilon)){
             Long numOfTransportInSubHH = 0L;
-            Long prefixHits = entry.getValue(); //counter ONLY in the current level
-            String prefix = entry.getKey();
+            Long prefixHits = entry.getCount(); //counter ONLY in the current level
+            String prefix = entry.getItem();
             if (prefixHits > N * theta){
                 for(Map.Entry<String,Long> hh : prevHH.entrySet()){
                     if(isPrefixOf(prefix, hh.getKey())){
@@ -113,7 +87,7 @@ public class RHHH implements Serializable {
                     }
                 }
                 if (prefixHits - numOfTransportInSubHH > N * theta){
-                    hhlist.put(entry.getKey(), prefixHits - numOfTransportInSubHH);
+                    hhlist.put(entry.getItem(), prefixHits - numOfTransportInSubHH);
                 }
             }
             else
@@ -180,7 +154,7 @@ public class RHHH implements Serializable {
     public void resetStatsForTesting(){
        N = 0;
         for (int i=1; i<=4;i++){
-            dbMap.put(i,new HashMap());
+            dbMap.put(i,new StreamSummary<String>(epsilon));
         }
     }
 
@@ -192,4 +166,13 @@ public class RHHH implements Serializable {
         return theta;
     }
 
+    public void mergeCounters(StreamSummary<String> counters, int level) {
+        StreamSummary<String> main_stream = dbMap.get(level);
+        int stream_size = counters.size();
+        List<Counter<String>> new_values = counters.topK(stream_size);
+        for (Counter<String> c : new_values) {
+            main_stream.offerReturnAll(c.getItem(), (int)c.getCount()); //todo: change increment to long?
+        }
+        N += stream_size;
+    }
 }
