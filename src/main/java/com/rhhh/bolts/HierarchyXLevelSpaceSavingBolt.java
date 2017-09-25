@@ -1,5 +1,7 @@
 package com.rhhh.bolts;
+import com.clearspring.analytics.stream.Counter;
 import com.clearspring.analytics.stream.StreamSummary;
+import com.rhhh.DBUtils;
 import com.rhhh.RHHHSpaceSaving;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -9,6 +11,9 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
+import java.awt.*;
+import java.lang.management.ManagementFactory;
+import java.sql.*;
 import java.util.Map;
 
 /**
@@ -22,7 +27,10 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private String[] ipAddressArray;
     private int Level;
     private int ips_received;
+    private String PID;
+    private String ThreadID;
     private RHHHSpaceSaving rhhh_manager;
+    private String WRITE_LEVEL = null;
 
     public HierarchyXLevelSpaceSavingBolt(int level){
         if  (level > 4 || level <= 0)
@@ -30,11 +38,14 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         Level = level;
         ips_received = 0;
         rhhh_manager = RHHHSpaceSaving.getInstance();
+        WRITE_LEVEL = "INSERT INTO Level" + level + "(name, HHCounter) VALUES (?, ?)";
     }
 
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
         this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
         this.collector = collector;
+        ThreadID = Thread.currentThread().getName();    //for PID(same for all bolts): ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+
     }
 
     public void execute(Tuple input) {
@@ -73,7 +84,37 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     public StreamSummary<String> getCounters(){ return counters;}
 
     private void updateMainFlow(){
-        rhhh_manager.mergeCounters(counters, Level);
+        //rhhh_manager.mergeCounters(counters, Level);
+
+        try {
+            Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
+            Statement stmt = conn.createStatement();
+            String sql_cmd = "INSERT INTO Level" + Level + " (HH) VALUES ('" + counters.toString() + "')";
+            stmt.executeUpdate(sql_cmd);
+            sql_cmd = "SELECT * FROM Level" + Level;
+            ResultSet rs = stmt.executeQuery(sql_cmd);
+            rs.next();
+            String res = (String) rs.getObject(1);
+            System.out.println(res);
+
+            /*for(Counter<String> entry : this.counters.topK(5)){
+                if(ipExistInLevel(entry.getItem())){
+                    // add to existed counter
+                }
+                else{
+                    //add to table with counter
+                }
+            }*/
+
+            // this block isn't working: when one thread serialize he is the only one can de-serialize
+//            Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
+//            long id = DBUtils.writeJavaObject(conn, counters, WRITE_LEVEL);
+//            String READ_OBJECT_SQL = "SELECT HHCounter FROM Level" + Level + " WHERE id = ?";
+//            StreamSummary<String> listFromDatabase = (StreamSummary) DBUtils.readJavaObject(conn, id, READ_OBJECT_SQL);
+//            System.out.println(listFromDatabase);
+        }  catch (Exception e) {
+            e.printStackTrace();
+        }
         this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
     }
 }
