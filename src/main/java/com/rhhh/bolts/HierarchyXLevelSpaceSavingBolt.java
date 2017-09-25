@@ -1,6 +1,5 @@
 package com.rhhh.bolts;
 import com.clearspring.analytics.stream.StreamSummary;
-import com.rhhh.RHHH;
 import com.rhhh.RHHHSpaceSaving;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -10,7 +9,6 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -40,26 +38,24 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     }
 
     public void execute(Tuple input) {
-        ipAddress = "";
-        ipAddressArray = input.getValue(0).toString().split("\\.");
-        int i = 0;
-        while(i < Level-1) {
-            ipAddress = ipAddress + ipAddressArray[i++] + ".";
+        try {
+            ipAddress = "";
+            ipAddressArray = input.getValue(0).toString().split("\\.");
+            int i = 0;
+            while (i < Level - 1) {
+                ipAddress = ipAddress + ipAddressArray[i++] + ".";
+            }
+            ipAddress = ipAddress + ipAddressArray[i];
+            this.counters.offerReturnAll(ipAddress, 1);
+            collector.ack(input);
+            ips_received++;
+            if (ips_received % this.rhhh_manager.getQueryFrequency() == 0 && ips_received != 0) {
+                this.updateMainFlow();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            collector.fail(input);
         }
-        ipAddress = ipAddress + ipAddressArray[i];
-        /* todo: delete this old functionality at all right places
-        if(!counters.containsKey(ipAddress))
-            counters.put(ipAddress,1);
-        else
-            counters.put(ipAddress, 1 + counters.get(ipAddress));
-        ips_received++;
-        */
-        this.counters.offerReturnAll(ipAddress, 1);
-        if(ips_received % this.rhhh_manager.getTheta() == 0){
-            this.updateMainFlow();
-        }
-//        rhhh_manager.addEntryOnLevel(this.Level, ipAddress);
-        collector.ack(input);
     }
 
     public void cleanup() {

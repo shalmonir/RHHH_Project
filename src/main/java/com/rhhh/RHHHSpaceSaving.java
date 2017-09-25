@@ -18,34 +18,11 @@ public class RHHHSpaceSaving implements Serializable {
 
     private static RHHHSpaceSaving manager = new RHHHSpaceSaving();
     Map<Integer, StreamSummary<String>> dbMap;
-    private double theta = 0.2; // todo: get as input
-    private int epsilon = 1000; // todo: get as input + build tables accordingly
-    private int query_frequency = 1000; // todo: get as input + design accordingly
+    // todo: decide default values!
+    private double theta = 0.2; // theta / 100 = the percentage require to be HH
+    private int epsilon = 1000; // Table size
+    private Long query_frequency = 1000L; // interval for sync between bolt and singleton
     int N = 0; // the sum of all ip addresses counted by the manager
-
-    public static RHHHSpaceSaving getInstance(){
-        return manager;
-    }
-
-    /**
-     * ?? we might take that param as int and divide by 100?? more user-friendly
-     * @param theta - new value for threshold parameter
-     */
-    public void setTheta(double theta){
-        if(theta < 0 || query_frequency < 0){
-            // todo: write error to log
-            return;
-        }
-        this.theta = theta;
-    }
-
-    public void setQuery_frequency(int query_frequency){
-        if(query_frequency < 0 || query_frequency < 0){
-            // todo: write error to log
-            return;
-        }
-        this.query_frequency = query_frequency;
-    }
 
     private RHHHSpaceSaving(){
         dbMap = new HashMap();
@@ -54,8 +31,8 @@ public class RHHHSpaceSaving implements Serializable {
         }
     }
 
-    public Map<String,Long> getHeavyHitters(){
-        return getHeavyHitters(1);
+    public static RHHHSpaceSaving getInstance(){
+        return manager;
     }
 
     private Map<String,Long> getHeavyHitters(int level){
@@ -68,11 +45,9 @@ public class RHHHSpaceSaving implements Serializable {
                 }
                 else
                 {
-                    //Assuming map is sorted from the most HH to the least HH
                     break;
                 }
             }
-//            return hhlist; // todo: replace that call in normal one as soon as Saving-Space is integrated
             return sortMap(hhlist);
         }
         Map<String,Long> prevHH = getHeavyHitters(level+1);
@@ -125,10 +100,6 @@ public class RHHHSpaceSaving implements Serializable {
             System.out.print(hh + "\n");
     }
 
-    public static void main(String a[]){
-        System.out.print("RHHH");
-    }
-
     /**
      * sorting map DESCENDING
      * @param map - the map to sort
@@ -158,6 +129,55 @@ public class RHHHSpaceSaving implements Serializable {
         }
     }
 
+    public void mergeCounters(StreamSummary<String> counters, int level) {
+        StreamSummary<String> main_stream = dbMap.get(level);
+        int stream_size = counters.size();
+        List<Counter<String>> new_values = counters.topK(stream_size);
+        long stream_sum = 0;
+        for (Counter<String> c : new_values) {
+            main_stream.offerReturnAll(c.getItem(), (int)c.getCount()); //todo: change increment to long?
+            stream_sum += c.getCount();
+
+        }
+        N += stream_sum;
+    }
+
+    /**
+     * ?? we might take that param as int and divide by 100?? more user-friendly
+     * @param theta - new value for threshold parameter
+     */
+    public void setTheta(double theta){
+        if(theta < 0 || query_frequency < 0){
+            // todo: write error to log
+            return;
+        }
+        this.theta = theta;
+    }
+
+    public void setQuery_frequency(Long query_frequency){
+        if(query_frequency < 0){
+            // todo: write error to log
+            return;
+        }
+        this.query_frequency = query_frequency;
+    }
+
+    public void setQuery_frequency(int query_frequency){
+        if(query_frequency < 0){
+            // todo: write error to log
+            return;
+        }
+        this.query_frequency = (long)query_frequency;
+    }
+
+    public void setEpsilon(int epsilon){
+        if(epsilon < 0){
+            // todo: write error to log
+            return;
+        }
+        this.epsilon = epsilon;
+    }
+
     public int getEpsilon() {
         return epsilon;
     }
@@ -166,13 +186,12 @@ public class RHHHSpaceSaving implements Serializable {
         return theta;
     }
 
-    public void mergeCounters(StreamSummary<String> counters, int level) {
-        StreamSummary<String> main_stream = dbMap.get(level);
-        int stream_size = counters.size();
-        List<Counter<String>> new_values = counters.topK(stream_size);
-        for (Counter<String> c : new_values) {
-            main_stream.offerReturnAll(c.getItem(), (int)c.getCount()); //todo: change increment to long?
-        }
-        N += stream_size;
+    public Long getQueryFrequency() { return query_frequency; }
+
+    public Map<String,Long> getHeavyHitters(){
+        return getHeavyHitters(1);
     }
+
+
+
 }

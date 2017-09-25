@@ -28,7 +28,7 @@ public class SnifferTopology  {
         builder.setBolt("level-3", new HierarchyXLevelSpaceSavingBolt(3)).shuffleGrouping("ip-reader-spout", "StreamForL3");
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
 //        RHHH.getInstance().setTheta(0.01);
-//        RHHH.getInstance().setQuery_frequency(100);
+//        RHHH.getInstance().setQuery_frequency(100L);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
 
