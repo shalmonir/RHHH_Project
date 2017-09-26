@@ -65,7 +65,7 @@ public class DBUtils {
             for (int level = 1; level < 5 ; level++){
                 //sql_cmd = "CREATE TABLE Level"+ level + " (Level varchar(256), HHCounterSerialized LONGTEXT,PRIMARY KEY (Level))";
                 //sql_cmd = "CREATE TABLE Level"+ level + " (ip varchar(50), count int, primary key (ip))";
-                sql_cmd = "CREATE TABLE Level"+ level + " (HH LONGTEXT)";
+                sql_cmd = "CREATE TABLE Level"+ level + " (id BIGINT UNSIGNED, HH LONGTEXT, total BIGINT UNSIGNED)";
                 stmt.executeUpdate(sql_cmd);
             }
         } catch (SQLException e) {
@@ -94,35 +94,5 @@ public class DBUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static long writeJavaObject(Connection conn, Object object, String write_cmd) throws Exception {
-        String className = object.getClass().getName();
-        PreparedStatement pstmt = conn.prepareStatement(write_cmd);
-        pstmt.setString(1, className);
-        pstmt.setObject(2, object);
-        pstmt.executeUpdate();
-        ResultSet rs = pstmt.getGeneratedKeys();
-        int id = -1;
-        if (rs.next()) {
-            id = rs.getInt(1);
-        }
-        rs.close();
-        pstmt.close();
-        System.out.println("writeJavaObject: done serializing: " + className);
-        return id;
-    }
-
-    public static Object readJavaObject(Connection conn, long id, String read_cmd) throws Exception {
-        PreparedStatement pstmt = conn.prepareStatement(read_cmd);
-        pstmt.setLong(1, id);
-        ResultSet rs = pstmt.executeQuery();
-        rs.next();
-        Object object = rs.getObject(1);
-        String className = object.getClass().getName();
-        rs.close();
-        pstmt.close();
-        System.out.println("readJavaObject: done de-serializing: " + className);
-        return object;
     }
 }

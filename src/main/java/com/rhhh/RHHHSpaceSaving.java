@@ -22,7 +22,7 @@ public class RHHHSpaceSaving implements Serializable {
     private double theta = 0.2; // theta / 100 = the percentage require to be HH
     private int epsilon = 1000; // Table size
     private Long query_frequency = 1000L; // interval for sync between bolt and singleton
-    int N = 0; // the sum of all ip addresses counted by the manager
+    long N = 0; // the sum of all ip addresses counted by the manager
 
     private RHHHSpaceSaving(){
         dbMap = new HashMap();
@@ -191,7 +191,4 @@ public class RHHHSpaceSaving implements Serializable {
     public Map<String,Long> getHeavyHitters(){
         return getHeavyHitters(1);
     }
-
-
-
 }
