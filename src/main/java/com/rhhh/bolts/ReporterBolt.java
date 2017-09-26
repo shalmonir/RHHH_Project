@@ -37,7 +37,15 @@ public class ReporterBolt implements IRichBolt {
                 String sqlSelectHHStreamCommand = "SELECT HH FROM Level"+i+" ORDER BY id desc LIMIT 1";
                 ResultSet res = stmt.executeQuery(sqlSelectHHStreamCommand);
                 res.next();
-                StreamSummary<String> stream = new StreamSummary<>(res.getBytes(1));
+                String byteArrayAsString = res.getString(1);
+                String[] byteArrayAsStringArray = byteArrayAsString.substring(1,byteArrayAsString.length()-1).split(",");
+                int length = byteArrayAsStringArray.length;
+                byte[] byteArray = new byte[length];
+                for (int j = 0; j < length; j++) {
+                    byteArray[j] = Byte.parseByte(byteArrayAsStringArray[j].trim());
+                }
+                StreamSummary<String> stream = new StreamSummary<>(byteArray);
+                System.out.println(stream);
             }
 
         }

@@ -14,6 +14,7 @@ import org.apache.storm.tuple.Values;
 import java.awt.*;
 import java.lang.management.ManagementFactory;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -85,7 +86,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         try {
             Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
             Statement stmt = conn.createStatement();
-            String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + counters.toBytes() + "', " + ips_received + ")";
+            String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
             stmt.executeUpdate(sql_cmd);
         }  catch (Exception e) {
             e.printStackTrace();
