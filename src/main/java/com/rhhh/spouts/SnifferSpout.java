@@ -14,8 +14,8 @@ import org.pcap4j.util.NifSelector;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -25,10 +25,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class SnifferSpout implements IRichSpout {
 
-    PcapHandle handle;
-    long counter;
-    Inet4Address srcAdr;
-    Inet4Address dstAdr;
+    private PcapHandle handle;
+    private long counter;
+    private Inet4Address srcAdr;
+    private Inet4Address dstAdr;
+    private HashSet<String> localAddresses = new HashSet<>();
 
     private SpoutOutputCollector collector;
     private int current_stream = 0;
@@ -58,6 +59,10 @@ public class SnifferSpout implements IRichSpout {
         } catch (NotOpenException e) {
             e.printStackTrace();
         }
+
+        for (PcapAddress addr : nif.getAddresses()){
+            localAddresses.add(addr.getAddress().toString());
+        }
     }
 
     @Override
@@ -85,7 +90,7 @@ public class SnifferSpout implements IRichSpout {
             IpV4Packet v4 = p.get(IpV4Packet.class);
             if (v4 != null) {
                 srcAdr = v4.getHeader().getSrcAddr();
-                if (srcAdr.isAnyLocalAddress()){
+                if (localAddresses.contains(srcAdr.toString())){
                     return;
                 }
                 dstAdr = v4.getHeader().getDstAddr();
