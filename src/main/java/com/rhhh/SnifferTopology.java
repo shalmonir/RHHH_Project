@@ -1,6 +1,7 @@
 package com.rhhh;
 
 import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
+import com.rhhh.bolts.ReporterBolt;
 import com.rhhh.spouts.SnifferSpout;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
@@ -36,6 +37,9 @@ public class SnifferTopology  {
         builder.setBolt("level-2", new HierarchyXLevelSpaceSavingBolt(2)).shuffleGrouping("ip-reader-spout", "StreamForL2");
         builder.setBolt("level-3", new HierarchyXLevelSpaceSavingBolt(3)).shuffleGrouping("ip-reader-spout", "StreamForL3");
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
+        builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("level-1")
+                .shuffleGrouping("level-2").shuffleGrouping("level-3")
+                .shuffleGrouping("level-4");
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
         RHHHSpaceSaving.getInstance().setQuery_frequency(3); //todo: delete: for debug

@@ -59,6 +59,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
             ips_received++;
             if (ips_received % this.rhhh_manager.getQueryFrequency() == 0 && ips_received != 0) {
                 this.updateMainFlow();
+                collector.emit(new Values("null"));
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -84,11 +85,11 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         try {
             Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
             Statement stmt = conn.createStatement();
-            String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + counters.toString() + "', " + ips_received + ")";
+            String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + counters.toBytes() + "', " + ips_received + ")";
             stmt.executeUpdate(sql_cmd);
         }  catch (Exception e) {
             e.printStackTrace();
         }
-        this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
+        //this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
     }
 }

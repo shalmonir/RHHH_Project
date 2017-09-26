@@ -85,9 +85,10 @@ public class SnifferSpout implements IRichSpout {
             IpV4Packet v4 = p.get(IpV4Packet.class);
             if (v4 != null) {
                 srcAdr = v4.getHeader().getSrcAddr();
+                if (srcAdr.isAnyLocalAddress()){
+                    return;
+                }
                 dstAdr = v4.getHeader().getDstAddr();
-                System.out.println("From : "+srcAdr);
-                System.out.println("To : "+dstAdr);
                 this.collector.emit(streams.get(current_stream), new Values(srcAdr.toString()));
                 current_stream = (current_stream + 1) % 4;
             }
