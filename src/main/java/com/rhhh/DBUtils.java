@@ -63,8 +63,6 @@ public class DBUtils {
                 stmt.executeUpdate(sql_cmd);
             }
             for (int level = 1; level < 5 ; level++){
-                //sql_cmd = "CREATE TABLE Level"+ level + " (Level varchar(256), HHCounterSerialized LONGTEXT,PRIMARY KEY (Level))";
-                //sql_cmd = "CREATE TABLE Level"+ level + " (ip varchar(50), count int, primary key (ip))";
                 sql_cmd = "CREATE TABLE Level"+ level + " (id BIGINT AUTO_INCREMENT NOT NULL, HH BLOB, total BIGINT UNSIGNED, PRIMARY KEY (id))";
                 stmt.executeUpdate(sql_cmd);
             }

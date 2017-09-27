@@ -49,7 +49,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     public void execute(Tuple input) {
         try {
             ipAddress = "";
-            ipAddressArray = input.getValue(0).toString().split("\\.");
+            ipAddressArray = input.getValue(0).toString().replace("/", "").split("\\.");
             int i = 0;
             while (i < Level - 1) {
                 ipAddress = ipAddress + ipAddressArray[i++] + ".";
