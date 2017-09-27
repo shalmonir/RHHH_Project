@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.*;
+import java.util.Date;
 
 /**
  * Created by root on 9/26/17.
@@ -26,6 +27,7 @@ public class ReporterBolt implements IRichBolt {
     private long N = 0;
     private PrintWriter writer;
     private StreamSummary<String>[] current_counters = null;
+    long startTime;
 
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -34,10 +36,13 @@ public class ReporterBolt implements IRichBolt {
         try{
             writer = new PrintWriter("Report.txt", "UTF-8");
             writer.println("Reporter report Started\n");
+            PrintWriter writer_latest = new PrintWriter("Latest.txt", "UTF-8");
+            writer_latest.println("");
 //            writer.close();
         } catch (IOException e) {
             // do something
         }
+        startTime = System.currentTimeMillis();
     }
 
     @Override
@@ -45,13 +50,19 @@ public class ReporterBolt implements IRichBolt {
         try {
             Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
             stmt = conn.createStatement();
-//            N = getTotalPacketNumber();
-            //String sqlSelectTotalLevelCounter = "SELECT LAST 1 total FROM Level";
             Map<String,Long> hhhmap = getHeavyHitters(1);
-//            System.out.println("@@"+hhhmap);
             if(hhhmap != null) {
-                writer.println("Total = " + N + ". HH list: " + hhhmap + "\n");
+                long timePast = (System.currentTimeMillis() - startTime) / 1000;
+                writer.println("Total = " + N + "Time since started = " + timePast + ". HH list: " + hhhmap + "\n");
                 writer.flush();
+                PrintWriter writer_latest = new PrintWriter("Latest.txt", "UTF-8");
+                writer_latest.println("Total Packages = " + N + ", Number of HH = "+ hhhmap.size() +
+                        " , Time since started = " + timePast + " seconds.\n Here are the heavy hitters: \n");
+                writer_latest.println("IP prefix \t\t Hits\n");
+                for(Map.Entry<String, Long> entry : hhhmap.entrySet()){
+                    writer_latest.println(entry.getKey() + "\t\t" + entry.getValue() + "\n");
+                }
+                writer_latest.flush();
             }
         }
         catch (SQLException e){
@@ -107,7 +118,7 @@ public class ReporterBolt implements IRichBolt {
         Map<String,Long> tmp = new HashMap<>();
         tmp.putAll(prevHH);
         tmp.putAll(hhlist);
-        return tmp;
+        return sortMap(tmp);
     }
 
     private boolean isPrefixOf(String prefix, String key) {
@@ -135,21 +146,6 @@ public class ReporterBolt implements IRichBolt {
         return sortedHashMap;
     }
 
-    private StreamSummary<String> getStreamSummaryForLevel(int level) throws SQLException, IOException, ClassNotFoundException {
-        String sqlSelectHHStreamCommand = "SELECT HH FROM Level"+ level +" ORDER BY id desc LIMIT 1";
-        ResultSet res = stmt.executeQuery(sqlSelectHHStreamCommand);
-        res.next();
-        String byteArrayAsString = res.getString(1);
-        String[] byteArrayAsStringArray = byteArrayAsString.substring(1,byteArrayAsString.length()-1).split(",");
-        int length = byteArrayAsStringArray.length;
-        byte[] byteArray = new byte[length];
-        for (int j = 0; j < length; j++) {
-            byteArray[j] = Byte.parseByte(byteArrayAsStringArray[j].trim());
-        }
-        return new StreamSummary<>(byteArray);
-
-    }
-
     @Override
     public void cleanup() {
 
@@ -165,6 +161,7 @@ public class ReporterBolt implements IRichBolt {
         return null;
     }
 
+    /* //this two method united to one: getStreamSummaryForLevelAndUpdateTotal
     public long getTotalPacketNumber() throws SQLException {
         long sum = 0;
         for (int i = 1; i <= 4; i++) {
@@ -176,15 +173,28 @@ public class ReporterBolt implements IRichBolt {
         return sum;
     }
 
+    private StreamSummary<String> getStreamSummaryForLevel(int level) throws SQLException, IOException, ClassNotFoundException {
+        String sqlSelectHHStreamCommand = "SELECT HH FROM Level"+ level +" ORDER BY id desc LIMIT 1";
+        ResultSet res = stmt.executeQuery(sqlSelectHHStreamCommand);
+        res.next();
+        String byteArrayAsString = res.getString(1);
+        String[] byteArrayAsStringArray = byteArrayAsString.substring(1,byteArrayAsString.length()-1).split(",");
+        int length = byteArrayAsStringArray.length;
+        byte[] byteArray = new byte[length];
+        for (int j = 0; j < length; j++) {
+            byteArray[j] = Byte.parseByte(byteArrayAsStringArray[j].trim());
+        }
+        return new StreamSummary<>(byteArray);
+
+    }*/
+
     /**
-     * Suggest we calculate total and StreamSummary simultaneously to avoid mismatch of data (line added between calls)
-     * @return
+     * we calculate total and StreamSummary simultaneously to avoid mismatch of data (line added between calls)
      * @throws SQLException
      * @throws IOException
      * @throws ClassNotFoundException
      */
     private void getStreamSummaryForLevelAndUpdateTotal() throws SQLException, IOException, ClassNotFoundException {
-        StreamSummary<String>[] allLevels = new StreamSummary[5];
         long sum = 0;
         for (int i = 1; i <= 4; i++) {
             String sqlSelectTotalStreamCommand = "SELECT total, HH FROM Level"+i+" ORDER BY id desc LIMIT 1";

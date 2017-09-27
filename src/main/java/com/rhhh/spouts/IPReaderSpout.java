@@ -1,4 +1,5 @@
 package com.rhhh.spouts;
+import com.rhhh.RHHHSpaceSaving;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -52,7 +53,7 @@ public class IPReaderSpout implements IRichSpout {
         declarer.declareStream("StreamForL2", new Fields("srcIP"));
         declarer.declareStream("StreamForL3", new Fields("srcIP"));
         declarer.declareStream("StreamForL4", new Fields("srcIP"));
-
+        declarer.declareStream("Reporter",new Fields("ips_processed"));
     }
 
     public void open(Map conf, TopologyContext context,
@@ -86,6 +87,8 @@ public class IPReaderSpout implements IRichSpout {
             e.printStackTrace();
             open_next_file();
         }
+        if(counter % RHHHSpaceSaving.getInstance().getQueryFrequency() == 0)
+            collector.emit("Reporter",new Values("null"));
     }
 
     public void close() {

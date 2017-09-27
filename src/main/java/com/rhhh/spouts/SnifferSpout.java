@@ -1,5 +1,6 @@
 package com.rhhh.spouts;
 
+import com.rhhh.RHHHSpaceSaving;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -95,6 +96,9 @@ public class SnifferSpout implements IRichSpout {
                 dstAdr = v4.getHeader().getDstAddr();
                 this.collector.emit(streams.get(current_stream), new Values(srcAdr.toString()));
                 current_stream = (current_stream + 1) % 4;
+                if(counter % RHHHSpaceSaving.getInstance().getQueryFrequency() == 0)
+                    collector.emit("Reporter",new Values("null"));
+
             }
         } catch (PcapNativeException e) {
             e.printStackTrace();
@@ -123,6 +127,7 @@ public class SnifferSpout implements IRichSpout {
         outputFieldsDeclarer.declareStream("StreamForL2", new Fields("srcIP"));
         outputFieldsDeclarer.declareStream("StreamForL3", new Fields("srcIP"));
         outputFieldsDeclarer.declareStream("StreamForL4", new Fields("srcIP"));
+        outputFieldsDeclarer.declareStream("Reporter",new Fields("ips_processed"));
     }
 
     @Override

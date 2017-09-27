@@ -60,7 +60,6 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
             ips_received++;
             if (ips_received % this.rhhh_manager.getQueryFrequency() == 0 && ips_received != 0) {
                 this.updateMainFlow();
-                collector.emit(new Values("null"));
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -72,9 +71,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         this.collector.emit(new Values(ips_received, counters));
     }
 
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("ips_processed"));
-    }
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) { }
 
     public Map<String, Object> getComponentConfiguration() {
         return null;
@@ -91,6 +88,5 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         }  catch (Exception e) {
             e.printStackTrace();
         }
-        //this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
     }
 }
