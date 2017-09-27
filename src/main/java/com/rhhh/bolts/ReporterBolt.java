@@ -49,8 +49,10 @@ public class ReporterBolt implements IRichBolt {
             //String sqlSelectTotalLevelCounter = "SELECT LAST 1 total FROM Level";
             Map<String,Long> hhhmap = getHeavyHitters(1);
 //            System.out.println("@@"+hhhmap);
-            if(hhhmap != null)
+            if(hhhmap != null) {
                 writer.println("Total = " + N + ". HH list: " + hhhmap + "\n");
+                writer.flush();
+            }
         }
         catch (SQLException e){
             e.printStackTrace();
@@ -64,7 +66,7 @@ public class ReporterBolt implements IRichBolt {
     private Map<String,Long> getHeavyHitters(int level) throws SQLException, IOException, ClassNotFoundException {
         getStreamSummaryForLevelAndUpdateTotal();
         for (int i = 1; i < 5; i++) {
-            if(current_counters[level] == null)
+            if(current_counters[i] == null)
                 return null;
         }
         Map<String,Long> hhlist = new HashMap<>();

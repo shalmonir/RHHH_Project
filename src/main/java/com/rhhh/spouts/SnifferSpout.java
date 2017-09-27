@@ -86,7 +86,6 @@ public class SnifferSpout implements IRichSpout {
         try {
             p = handle.getNextPacketEx();
             counter++;
-            System.out.println(counter);
             IpV4Packet v4 = p.get(IpV4Packet.class);
             if (v4 != null) {
                 srcAdr = v4.getHeader().getSrcAddr();
