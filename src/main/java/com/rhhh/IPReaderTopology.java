@@ -39,8 +39,10 @@ public class IPReaderTopology {
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
         LocalCluster cluster = new LocalCluster();
-        cluster.submitTopology("RHHHTopology", config, builder.createTopology());
         RHHHSpaceSaving.getInstance().setQuery_frequency(500000); //todo: delete: for debug
+        RHHHSpaceSaving.getInstance().setTheta(0.4);
+        cluster.submitTopology("RHHHTopology", config, builder.createTopology());
+
         long endTime = System.currentTimeMillis();
         topology_log.info("RHHHTopology Finished. Total time taken = " + (endTime - startTime));
         DBUtils.disconnectDB();
