@@ -17,6 +17,8 @@ import java.sql.*;
 import java.util.Arrays;
 import java.util.Map;
 
+import static com.rhhh.DBUtils.disconnectDB;
+
 /**
  * Created by Nir on 06/05/2017.
  */

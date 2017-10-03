@@ -141,6 +141,8 @@ public class IPReaderSpout implements IRichSpout {
             spout_log.error("moving to next file");
             current_file_index++;
             open_next_file();
+        } catch (ArrayIndexOutOfBoundsException e){
+            close();
         }
         finally {
             current_file_index++;

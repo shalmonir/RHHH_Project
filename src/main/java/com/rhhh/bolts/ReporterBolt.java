@@ -2,6 +2,7 @@ package com.rhhh.bolts;
 
 import com.clearspring.analytics.stream.Counter;
 import com.clearspring.analytics.stream.StreamSummary;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import com.rhhh.DBUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -14,6 +15,8 @@ import java.io.PrintWriter;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+
+import static com.rhhh.DBUtils.disconnectDB;
 
 /**
  * Created by root on 9/26/17.
@@ -60,10 +63,12 @@ public class ReporterBolt implements IRichBolt {
                         " , Time since started = " + timePast + " seconds.\n Here are the heavy hitters: \n");
                 writer_latest.println("IP prefix \t\t Hits\n");
                 for(Map.Entry<String, Long> entry : hhhmap.entrySet()){
-                    writer_latest.println(entry.getKey() + "\t\t" + entry.getValue() + "\n");
+                    writer_latest.println(entry.getKey() + "\t\t" + entry.getValue());
                 }
                 writer_latest.flush();
             }
+        } catch (MySQLNonTransientConnectionException e){
+            e.printStackTrace();
         }
         catch (SQLException e){
             e.printStackTrace();
