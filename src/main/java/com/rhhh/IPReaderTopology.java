@@ -31,8 +31,6 @@ public class IPReaderTopology {
         config.setDebug(true);
         config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
         TopologyBuilder builder = new TopologyBuilder();
-        RHHHSpaceSaving.getInstance().setQuery_frequency(100); //todo: delete: for debug
-        RHHHSpaceSaving.getInstance().setTheta(0.4);
         builder.setSpout("ip-reader-spout", new IPReaderSpout(true, args));
         builder.setBolt("level-1", new HierarchyXLevelSpaceSavingBolt(1)).shuffleGrouping("ip-reader-spout", "StreamForL1");
         builder.setBolt("level-2", new HierarchyXLevelSpaceSavingBolt(2)).shuffleGrouping("ip-reader-spout", "StreamForL2");

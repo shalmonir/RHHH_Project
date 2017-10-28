@@ -25,8 +25,8 @@ public class ReporterBolt implements IRichBolt {
 
     private OutputCollector collector;
     private Statement stmt = null;
-    private int epsilon = 1000;
-    private double theta = 0.001;
+    private int epsilon = HierarchyXLevelSpaceSavingBolt.epsilon;
+    private double theta = 0.01;
     private long N = 0;
     private PrintWriter writer;
     private StreamSummary<String>[] current_counters = null;
@@ -166,32 +166,6 @@ public class ReporterBolt implements IRichBolt {
         return null;
     }
 
-    /* //this two method united to one: getStreamSummaryForLevelAndUpdateTotal
-    public long getTotalPacketNumber() throws SQLException {
-        long sum = 0;
-        for (int i = 1; i <= 4; i++) {
-            String sqlSelectTotalStreamCommand = "SELECT total FROM Level"+i+" ORDER BY id desc LIMIT 1";
-            ResultSet res = stmt.executeQuery(sqlSelectTotalStreamCommand);
-            res.next();
-            sum += Long.parseLong(res.getString(1));
-        }
-        return sum;
-    }
-
-    private StreamSummary<String> getStreamSummaryForLevel(int level) throws SQLException, IOException, ClassNotFoundException {
-        String sqlSelectHHStreamCommand = "SELECT HH FROM Level"+ level +" ORDER BY id desc LIMIT 1";
-        ResultSet res = stmt.executeQuery(sqlSelectHHStreamCommand);
-        res.next();
-        String byteArrayAsString = res.getString(1);
-        String[] byteArrayAsStringArray = byteArrayAsString.substring(1,byteArrayAsString.length()-1).split(",");
-        int length = byteArrayAsStringArray.length;
-        byte[] byteArray = new byte[length];
-        for (int j = 0; j < length; j++) {
-            byteArray[j] = Byte.parseByte(byteArrayAsStringArray[j].trim());
-        }
-        return new StreamSummary<>(byteArray);
-
-    }*/
 
     /**
      * we calculate total and StreamSummary simultaneously to avoid mismatch of data (line added between calls)
@@ -206,12 +180,6 @@ public class ReporterBolt implements IRichBolt {
             ResultSet res = stmt.executeQuery(sqlSelectTotalStreamCommand);
             res.next();
             sum += Long.parseLong(res.getString(1));
-            // now, we get the counters back from byteArray:
-
-//            String sqlSelectHHStreamCommand = "SELECT HH FROM Level"+ i +" ORDER BY id desc LIMIT 1";
-//            res = stmt.executeQuery(sqlSelectHHStreamCommand);
-//            res.next();
-
             String byteArrayAsString = res.getString(2);
             String[] byteArrayAsStringArray = byteArrayAsString.substring(1,byteArrayAsString.length()-1).split(",");
             int length = byteArrayAsStringArray.length;

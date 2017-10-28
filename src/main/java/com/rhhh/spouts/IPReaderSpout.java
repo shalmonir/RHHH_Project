@@ -1,5 +1,5 @@
 package com.rhhh.spouts;
-import com.rhhh.RHHHSpaceSaving;
+import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -35,6 +35,8 @@ public class IPReaderSpout implements IRichSpout {
     String line;
     BufferedReader buffer;
     private boolean finished_all_files;
+    private int queryFrequency = 50000;
+
 
     public IPReaderSpout(boolean is_files_based, String[] input_files_list) {
         if (is_files_based == true && input_files_list == null) {
@@ -87,7 +89,7 @@ public class IPReaderSpout implements IRichSpout {
             e.printStackTrace();
             open_next_file();
         }
-        if(counter % RHHHSpaceSaving.getInstance().getQueryFrequency() == 0)
+        if(counter % queryFrequency == 0)
             collector.emit("Reporter",new Values("null"));
     }
 
@@ -95,8 +97,13 @@ public class IPReaderSpout implements IRichSpout {
         Date date = new Date();
         spout_log.info("Spout Finish time = " + dateFormat.format(date));
         spout_log.info("IPReaderSpout Closed Input File. Counter = " + counter);
+        copy_log_in_format();
         while(true){}
 //        System.exit(1);
+    }
+
+    private void copy_log_in_format() {
+
     }
 
     public boolean isDistributed() {

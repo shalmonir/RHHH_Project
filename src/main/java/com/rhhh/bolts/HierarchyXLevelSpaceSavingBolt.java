@@ -1,23 +1,17 @@
 package com.rhhh.bolts;
-import com.clearspring.analytics.stream.Counter;
 import com.clearspring.analytics.stream.StreamSummary;
 import com.rhhh.DBUtils;
-import com.rhhh.RHHHSpaceSaving;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
-import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.awt.*;
-import java.lang.management.ManagementFactory;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Map;
-
-import static com.rhhh.DBUtils.disconnectDB;
+import java.util.Random;
 
 /**
  * Created by Nir on 06/05/2017.
@@ -31,25 +25,29 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private int Level;
     private int ips_received;
     private String ThreadID;
-    private RHHHSpaceSaving rhhh_manager;
+    private Random rand;
+    public static int updateDBFrequency = 10000;
+    public static int epsilon = 1000;
 
     public HierarchyXLevelSpaceSavingBolt(int level){
         if  (level > 4 || level <= 0)
             throw new IllegalArgumentException();
         Level = level;
         ips_received = 0;
-        rhhh_manager = RHHHSpaceSaving.getInstance();
     }
 
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
-        this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
+        this.counters = new StreamSummary<>(epsilon);
         this.collector = collector;
         ThreadID = Thread.currentThread().getName();    //for PID(same for all bolts): ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-
+        rand = new Random();
     }
 
     public void execute(Tuple input) {
         try {
+            if(!some_probability_func()){
+                return;
+            }
             ipAddress = "";
             ipAddressArray = input.getValue(0).toString().replace("/", "").split("\\.");
             int i = 0;
@@ -60,13 +58,17 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
             this.counters.offerReturnAll(ipAddress, 1);
             collector.ack(input);
             ips_received++;
-            if (ips_received % this.rhhh_manager.getQueryFrequency() == 0 && ips_received != 0) {
+            if (ips_received % updateDBFrequency == 0 && ips_received != 0) {
                 this.updateMainFlow();
             }
         } catch (Exception e){
             e.printStackTrace();
             collector.fail(input);
         }
+    }
+
+    private boolean some_probability_func() {
+        return rand.nextInt(10) == 1;
     }
 
     public void cleanup() {

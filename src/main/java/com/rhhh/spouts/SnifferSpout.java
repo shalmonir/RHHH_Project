@@ -1,6 +1,6 @@
 package com.rhhh.spouts;
 
-import com.rhhh.RHHHSpaceSaving;
+import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -35,6 +35,7 @@ public class SnifferSpout implements IRichSpout {
     private SpoutOutputCollector collector;
     private int current_stream = 0;
     private List<String> streams = Arrays.asList("StreamForL1", "StreamForL2", "StreamForL3", "StreamForL4");
+    private int queryFrequency = 50000;
 
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
@@ -96,7 +97,7 @@ public class SnifferSpout implements IRichSpout {
                 dstAdr = v4.getHeader().getDstAddr();
                 this.collector.emit(streams.get(current_stream), new Values(srcAdr.toString()));
                 current_stream = (current_stream + 1) % 4;
-                if(counter % RHHHSpaceSaving.getInstance().getQueryFrequency() == 0)
+                if(counter % queryFrequency == 0)
                     collector.emit("Reporter",new Values("null"));
 
             }

@@ -40,7 +40,6 @@ public class SnifferTopology  {
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
-        RHHHSpaceSaving.getInstance().setQuery_frequency(3); //todo: delete: for debug
         long endTime = System.currentTimeMillis();
         topology_log.info("RHHHTopology Finished. Total time taken = " + (endTime - startTime));
         DBUtils.disconnectDB();
