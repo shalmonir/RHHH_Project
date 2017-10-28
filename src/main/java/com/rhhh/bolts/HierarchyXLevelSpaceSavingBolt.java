@@ -1,17 +1,17 @@
 package com.rhhh.bolts;
 import com.clearspring.analytics.stream.StreamSummary;
-import com.rhhh.RHHH;
-import com.rhhh.RHHHSpaceSaving;
+import com.rhhh.DBUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
-import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 
-import java.util.HashMap;
+import java.sql.*;
+import java.util.Arrays;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * Created by Nir on 06/05/2017.
@@ -24,51 +24,58 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private String[] ipAddressArray;
     private int Level;
     private int ips_received;
-    private RHHHSpaceSaving rhhh_manager;
+    private String ThreadID;
+    private Random rand;
+    public static int updateDBFrequency = 10000;
+    public static int epsilon = 1000;
 
     public HierarchyXLevelSpaceSavingBolt(int level){
         if  (level > 4 || level <= 0)
             throw new IllegalArgumentException();
         Level = level;
         ips_received = 0;
-        rhhh_manager = RHHHSpaceSaving.getInstance();
     }
 
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
-        this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
+        this.counters = new StreamSummary<>(epsilon);
         this.collector = collector;
+        ThreadID = Thread.currentThread().getName();    //for PID(same for all bolts): ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        rand = new Random();
     }
 
     public void execute(Tuple input) {
-        ipAddress = "";
-        ipAddressArray = input.getValue(0).toString().split("\\.");
-        int i = 0;
-        while(i < Level-1) {
-            ipAddress = ipAddress + ipAddressArray[i++] + ".";
+        try {
+            if(!some_probability_func()){
+                return;
+            }
+            ipAddress = "";
+            ipAddressArray = input.getValue(0).toString().replace("/", "").split("\\.");
+            int i = 0;
+            while (i < Level - 1) {
+                ipAddress = ipAddress + ipAddressArray[i++] + ".";
+            }
+            ipAddress = ipAddress + ipAddressArray[i];
+            this.counters.offerReturnAll(ipAddress, 1);
+            collector.ack(input);
+            ips_received++;
+            if (ips_received % updateDBFrequency == 0 && ips_received != 0) {
+                this.updateMainFlow();
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+            collector.fail(input);
         }
-        ipAddress = ipAddress + ipAddressArray[i];
-        /* todo: delete this old functionality at all right places
-        if(!counters.containsKey(ipAddress))
-            counters.put(ipAddress,1);
-        else
-            counters.put(ipAddress, 1 + counters.get(ipAddress));
-        ips_received++;
-        */
-        this.counters.offerReturnAll(ipAddress, 1);
-        if(ips_received % this.rhhh_manager.getTheta() == 0){
-            this.updateMainFlow();
-        }
-//        rhhh_manager.addEntryOnLevel(this.Level, ipAddress);
-        collector.ack(input);
+    }
+
+    private boolean some_probability_func() {
+        return rand.nextInt(10) == 1;
     }
 
     public void cleanup() {
         this.collector.emit(new Values(ips_received, counters));
     }
 
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("ips_processed"));
-    }
+    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) { }
 
     public Map<String, Object> getComponentConfiguration() {
         return null;
@@ -77,7 +84,13 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     public StreamSummary<String> getCounters(){ return counters;}
 
     private void updateMainFlow(){
-        rhhh_manager.mergeCounters(counters, Level);
-        this.counters = new StreamSummary<>(rhhh_manager.getEpsilon());
+        try {
+            Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
+            Statement stmt = conn.createStatement();
+            String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
+            stmt.executeUpdate(sql_cmd);
+        }  catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

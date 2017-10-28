@@ -1,5 +1,6 @@
 package com.rhhh.spouts;
 
+import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -14,8 +15,8 @@ import org.pcap4j.util.NifSelector;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -25,14 +26,16 @@ import java.util.concurrent.TimeoutException;
  */
 public class SnifferSpout implements IRichSpout {
 
-    PcapHandle handle;
-    long counter;
-    Inet4Address srcAdr;
-    Inet4Address dstAdr;
+    private PcapHandle handle;
+    private long counter;
+    private Inet4Address srcAdr;
+    private Inet4Address dstAdr;
+    private HashSet<String> localAddresses = new HashSet<>();
 
     private SpoutOutputCollector collector;
     private int current_stream = 0;
     private List<String> streams = Arrays.asList("StreamForL1", "StreamForL2", "StreamForL3", "StreamForL4");
+    private int queryFrequency = 50000;
 
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
@@ -58,6 +61,10 @@ public class SnifferSpout implements IRichSpout {
         } catch (NotOpenException e) {
             e.printStackTrace();
         }
+
+        for (PcapAddress addr : nif.getAddresses()){
+            localAddresses.add(addr.getAddress().toString());
+        }
     }
 
     @Override
@@ -81,15 +88,18 @@ public class SnifferSpout implements IRichSpout {
         try {
             p = handle.getNextPacketEx();
             counter++;
-            System.out.println(counter);
             IpV4Packet v4 = p.get(IpV4Packet.class);
             if (v4 != null) {
                 srcAdr = v4.getHeader().getSrcAddr();
+                if (localAddresses.contains(srcAdr.toString())){
+                    return;
+                }
                 dstAdr = v4.getHeader().getDstAddr();
-                System.out.println("From : "+srcAdr);
-                System.out.println("To : "+dstAdr);
                 this.collector.emit(streams.get(current_stream), new Values(srcAdr.toString()));
                 current_stream = (current_stream + 1) % 4;
+                if(counter % queryFrequency == 0)
+                    collector.emit("Reporter",new Values("null"));
+
             }
         } catch (PcapNativeException e) {
             e.printStackTrace();
@@ -118,6 +128,7 @@ public class SnifferSpout implements IRichSpout {
         outputFieldsDeclarer.declareStream("StreamForL2", new Fields("srcIP"));
         outputFieldsDeclarer.declareStream("StreamForL3", new Fields("srcIP"));
         outputFieldsDeclarer.declareStream("StreamForL4", new Fields("srcIP"));
+        outputFieldsDeclarer.declareStream("Reporter",new Fields("ips_processed"));
     }
 
     @Override

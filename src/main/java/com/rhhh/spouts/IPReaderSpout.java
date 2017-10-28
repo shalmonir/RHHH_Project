@@ -1,4 +1,5 @@
 package com.rhhh.spouts;
+import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -34,6 +35,8 @@ public class IPReaderSpout implements IRichSpout {
     String line;
     BufferedReader buffer;
     private boolean finished_all_files;
+    private int queryFrequency = 50000;
+
 
     public IPReaderSpout(boolean is_files_based, String[] input_files_list) {
         if (is_files_based == true && input_files_list == null) {
@@ -52,7 +55,7 @@ public class IPReaderSpout implements IRichSpout {
         declarer.declareStream("StreamForL2", new Fields("srcIP"));
         declarer.declareStream("StreamForL3", new Fields("srcIP"));
         declarer.declareStream("StreamForL4", new Fields("srcIP"));
-
+        declarer.declareStream("Reporter",new Fields("ips_processed"));
     }
 
     public void open(Map conf, TopologyContext context,
@@ -86,14 +89,21 @@ public class IPReaderSpout implements IRichSpout {
             e.printStackTrace();
             open_next_file();
         }
+        if(counter % queryFrequency == 0)
+            collector.emit("Reporter",new Values("null"));
     }
 
     public void close() {
         Date date = new Date();
         spout_log.info("Spout Finish time = " + dateFormat.format(date));
         spout_log.info("IPReaderSpout Closed Input File. Counter = " + counter);
+        copy_log_in_format();
         while(true){}
 //        System.exit(1);
+    }
+
+    private void copy_log_in_format() {
+
     }
 
     public boolean isDistributed() {
@@ -138,6 +148,8 @@ public class IPReaderSpout implements IRichSpout {
             spout_log.error("moving to next file");
             current_file_index++;
             open_next_file();
+        } catch (ArrayIndexOutOfBoundsException e){
+            close();
         }
         finally {
             current_file_index++;

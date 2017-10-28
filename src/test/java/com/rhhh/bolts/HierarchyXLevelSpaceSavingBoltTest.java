@@ -8,7 +8,6 @@ import org.apache.storm.utils.MockTupleHelpers;
 import org.testng.annotations.Test;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 import static org.mockito.Mockito.*;
@@ -50,7 +49,7 @@ public class HierarchyXLevelSpaceSavingBoltTest {
         verify(collector).ack(normalTuple);
     }
 
-/*    @Test
+    @Test
     public void CountTupleCorrectly() {
         HierarchyXLevelSpaceSavingBolt bolt = new HierarchyXLevelSpaceSavingBolt(4);
         OutputCollector collector = mock(OutputCollector.class);
@@ -60,11 +59,9 @@ public class HierarchyXLevelSpaceSavingBoltTest {
         for(int i = 0 ; i < tuple_amount ; i++){
             bolt.execute(FixIpTuple("1.2.3.4"));
         }
-        assert (tuple_amount == bolt.getCounters().get("1.2.3.4"));
-        for(Map.Entry<String, Integer> entry : bolt.getCounters().entrySet()){
-            System.out.println(entry.getKey()+" : " + entry.getValue());
-        }
-    }*/
+        assert (1 == bolt.getCounters().topK(1).size());
+        assert (tuple_amount == bolt.getCounters().topK(1).get(0).getCount());
+    }
 
     @Test
     public void parsingCorrectly() {
