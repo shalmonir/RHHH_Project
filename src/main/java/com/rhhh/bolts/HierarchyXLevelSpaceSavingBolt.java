@@ -26,8 +26,12 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private int ips_received;
     private String ThreadID;
     private Random rand;
-    public static int updateDBFrequency = 10000;
+    public static int updateDBFrequency = 100; //todo: return to 10000
     public static int epsilon = 1000;
+
+    public static void setEpsilon(int eps){
+        epsilon = eps;
+    }
 
     public HierarchyXLevelSpaceSavingBolt(int level){
         if  (level > 4 || level <= 0)

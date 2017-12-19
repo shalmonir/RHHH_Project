@@ -4,19 +4,20 @@ import com.clearspring.analytics.stream.Counter;
 import com.clearspring.analytics.stream.StreamSummary;
 import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import com.rhhh.DBUtils;
+import com.rhhh.HtmlUtility;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichBolt;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.tuple.Tuple;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.*;
 import java.util.*;
-import java.util.Date;
 
-import static com.rhhh.DBUtils.disconnectDB;
+import static java.lang.System.exit;
 
 /**
  * Created by root on 9/26/17.
@@ -32,18 +33,36 @@ public class ReporterBolt implements IRichBolt {
     private StreamSummary<String>[] current_counters = null;
     long startTime;
 
+    public static void setTeta(double theta){
+        theta = theta;
+    }
+
     @Override
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
         current_counters = new StreamSummary[5];
         try{
-            writer = new PrintWriter("Report.txt", "UTF-8");
+            File f = new File("/tmp/rhhh");
+            if(!f.exists()){
+                f.mkdir();
+            }
+            writer = new PrintWriter("/tmp/rhhh/Report.txt", "UTF-8");
             writer.println("Reporter report Started\n");
-            PrintWriter writer_latest = new PrintWriter("Latest.txt", "UTF-8");
+            PrintWriter writer_latest = new PrintWriter("/tmp/rhhh/Latest.txt", "UTF-8");
             writer_latest.println("");
-//            writer.close();
         } catch (IOException e) {
-            // do something
+            e.printStackTrace();
+            exit(0);
+        }
+        try {
+            PrintWriter writerHtml = new PrintWriter("/tmp/rhhh/display.html", "UTF-8");
+            writerHtml.print(HtmlUtility.html);
+            writerHtml.flush();
+//            Files.copy(new File("display.html").toPath(), new File("/tmp/rhhh/display.html").toPath(), REPLACE_EXISTING);
+        } catch (IOException e) {
+            System.err.println("Failed to copy html file to your tmp/rhhh");
+            e.printStackTrace();
+            exit(0);
         }
         startTime = System.currentTimeMillis();
     }
@@ -58,7 +77,7 @@ public class ReporterBolt implements IRichBolt {
                 long timePast = (System.currentTimeMillis() - startTime) / 1000;
                 writer.println("Total = " + N + "Time since started = " + timePast + ". HH list: " + hhhmap + "\n");
                 writer.flush();
-                PrintWriter writer_latest = new PrintWriter("Latest.txt", "UTF-8");
+                PrintWriter writer_latest = new PrintWriter("/tmp/rhhh/Latest.txt", "UTF-8");
                 writer_latest.println("Total Packages = " + N + ", Number of HH = "+ hhhmap.size() +
                         " , Time since started = " + timePast + " seconds.\n Here are the heavy hitters: \n");
                 writer_latest.println("IP prefix \t\t Hits\n");
@@ -192,3 +211,4 @@ public class ReporterBolt implements IRichBolt {
         N = sum;
     }
 }
+

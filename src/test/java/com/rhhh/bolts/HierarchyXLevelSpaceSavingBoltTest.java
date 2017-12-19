@@ -1,3 +1,4 @@
+/*
 package com.rhhh.bolts;
 
 import com.clearspring.analytics.stream.Counter;
@@ -12,9 +13,11 @@ import java.util.Random;
 
 import static org.mockito.Mockito.*;
 
+*/
 /**
  * Created by Nir on 03/06/2017.
- */
+ *//*
+
 public class HierarchyXLevelSpaceSavingBoltTest {
     private static final String ANY_NON_SYSTEM_COMPONENT_ID = "irrelevant_component_id";
     private static final String ANY_NON_SYSTEM_STREAM_ID = "irrelevant_stream_id";
@@ -91,3 +94,4 @@ public class HierarchyXLevelSpaceSavingBoltTest {
         verify(collector).emit(any(Values.class));
     }
 }
+*/

@@ -1,6 +1,5 @@
 package com.rhhh.spouts;
 
-import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -50,7 +49,7 @@ public class SnifferSpout implements IRichSpout {
         PcapNetworkInterface.PromiscuousMode mode = PcapNetworkInterface.PromiscuousMode.PROMISCUOUS;
         int timeout = 10000;
         try {
-            handle = nif.openLive(snapLen,mode,timeout);
+            handle = nif.openLive(snapLen, mode, timeout);
         } catch (PcapNativeException e) {
             e.printStackTrace();
         }

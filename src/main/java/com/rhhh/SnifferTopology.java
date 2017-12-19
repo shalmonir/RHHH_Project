@@ -10,12 +10,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.FailedLoginException;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 /**
  * Created by root on 9/24/17.
  */
 public class SnifferTopology  {
-    public static void main(String[] args){
+    public static void main(String[] args) throws FileNotFoundException {
         try {
             DBUtils.ConnectDB();
             DBUtils.createTablesForLevels();
@@ -24,6 +27,13 @@ public class SnifferTopology  {
             System.out.println("Failed to connect to db");
             System.exit(1);
         }
+        if(args.length == 0) {
+            //set default values - in RHHH
+        } else {
+            HierarchyXLevelSpaceSavingBolt.setEpsilon(Integer.parseInt(args[0]));
+            ReporterBolt.setTeta(Double.parseDouble(args[1]));
+        }
+
         long startTime = System.currentTimeMillis();
         Logger topology_log = LoggerFactory.getLogger(SnifferTopology.class);
         topology_log.info("RHHHTopology started");
