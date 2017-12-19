@@ -1,0 +1,4 @@
+worker-id: cfac1765-8203-461b-bed0-fc33c0a1df50
+logs.users: []
+logs.groups: []
+topology.submitter.user: root

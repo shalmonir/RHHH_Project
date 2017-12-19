@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="0" name="Failed suite [Surefire suite]" junit="true">
+  <test name="Surefire test(failed)" junit="true">
+    <groups>
+      <run>
+        <exclude name="org.apache.storm.testing.IntegrationTest"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.rhhh.manager.RHHHSpaceSavingmanagerTest">
+        <methods>
+          <include name="HHInLevel1Test"/>
+        </methods>
+      </class> <!-- com.rhhh.manager.RHHHSpaceSavingmanagerTest -->
+    </classes>
+  </test> <!-- Surefire test(failed) -->
+</suite> <!-- Failed suite [Surefire suite] -->

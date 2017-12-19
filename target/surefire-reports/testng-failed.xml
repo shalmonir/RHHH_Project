@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite thread-count="1" verbose="0" name="Failed suite [Surefire suite]">
+  <test name="Surefire test(failed)">
+    <groups>
+      <run>
+        <exclude name="org.apache.storm.testing.IntegrationTest"/>
+      </run>
+    </groups>
+    <classes>
+      <class name="com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest">
+        <methods>
+          <include name="CountTupleCorrectly"/>
+          <include name="shouldAckIfTupleIsReceived"/>
+        </methods>
+      </class> <!-- com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest -->
+    </classes>
+  </test> <!-- Surefire test(failed) -->
+</suite> <!-- Failed suite [Surefire suite] -->

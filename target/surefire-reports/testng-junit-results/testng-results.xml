@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="1" total="9" passed="8">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Surefire suite" duration-ms="1806" started-at="2017-09-25T07:18:24Z" finished-at="2017-09-25T07:18:26Z">
+    <groups>
+    </groups>
+    <test name="Surefire test" duration-ms="1806" started-at="2017-09-25T07:18:24Z" finished-at="2017-09-25T07:18:26Z">
+      <class name="com.rhhh.manager.RHHHSpaceSavingmanagerTest">
+        <test-method status="PASS" signature="subtractSonsTest()[pri:0, instance:subtractSonsTest(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="subtractSonsTest" duration-ms="14" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- subtractSonsTest -->
+        <test-method status="PASS" signature="checkParallelism()[pri:0, instance:checkParallelism(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="checkParallelism" duration-ms="5" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- checkParallelism -->
+        <test-method status="PASS" signature="subtractSonsAndBeHHTest()[pri:0, instance:subtractSonsAndBeHHTest(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="subtractSonsAndBeHHTest" duration-ms="36" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- subtractSonsAndBeHHTest -->
+        <test-method status="PASS" signature="getHeavyHittersSmallTest()[pri:0, instance:getHeavyHittersSmallTest(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="getHeavyHittersSmallTest" duration-ms="1" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getHeavyHittersSmallTest -->
+        <test-method status="PASS" signature="getHeavyHittersBigTest()[pri:0, instance:getHeavyHittersBigTest(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="getHeavyHittersBigTest" duration-ms="1721" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:26Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getHeavyHittersBigTest -->
+        <test-method status="FAIL" signature="HHInLevel1Test()[pri:0, instance:HHInLevel1Test(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="HHInLevel1Test" duration-ms="2" started-at="2017-09-25T10:18:26Z" finished-at="2017-09-25T10:18:26Z">
+          <exception class="java.lang.AssertionError">
+            <full-stacktrace>
+              <![CDATA[java.lang.AssertionError
+	at com.rhhh.manager.RHHHSpaceSavingmanagerTest.HHInLevel1Test(RHHHSpaceSavingmanagerTest.java:136)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:50)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:47)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:325)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:78)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:57)
+	at org.junit.runners.ParentRunner$3.run(ParentRunner.java:290)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:71)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:288)
+	at org.junit.runners.ParentRunner.access$000(ParentRunner.java:58)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:268)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:363)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
+	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
+	at org.testng.junit.JUnit4TestRunner.start(JUnit4TestRunner.java:81)
+	at org.testng.junit.JUnit4TestRunner.run(JUnit4TestRunner.java:69)
+	at org.testng.TestRunner$1.run(TestRunner.java:682)
+	at org.testng.TestRunner.runWorkers(TestRunner.java:1005)
+	at org.testng.TestRunner.privateRunJUnit(TestRunner.java:713)
+	at org.testng.TestRunner.run(TestRunner.java:614)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:115)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:212)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:108)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:111)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.AssertionError -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- HHInLevel1Test -->
+        <test-method status="PASS" signature="HHInLevel3Test()[pri:0, instance:HHInLevel3Test(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="HHInLevel3Test" duration-ms="1" started-at="2017-09-25T10:18:26Z" finished-at="2017-09-25T10:18:26Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- HHInLevel3Test -->
+        <test-method status="PASS" signature="oneIpTest()[pri:0, instance:oneIpTest(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="oneIpTest" duration-ms="0" started-at="2017-09-25T10:18:26Z" finished-at="2017-09-25T10:18:26Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- oneIpTest -->
+        <test-method status="PASS" signature="getHeavyHittersTinyTest()[pri:0, instance:getHeavyHittersTinyTest(com.rhhh.manager.RHHHSpaceSavingmanagerTest)]" name="getHeavyHittersTinyTest" duration-ms="1" started-at="2017-09-25T10:18:26Z" finished-at="2017-09-25T10:18:26Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- getHeavyHittersTinyTest -->
+      </class> <!-- com.rhhh.manager.RHHHSpaceSavingmanagerTest -->
+    </test> <!-- Surefire test -->
+  </suite> <!-- Surefire suite -->
+</testng-results>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="8" passed="8">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Surefire suite" duration-ms="329" started-at="2017-09-25T07:18:24Z" finished-at="2017-09-25T07:18:24Z">
+    <groups>
+    </groups>
+    <test name="Surefire test" duration-ms="329" started-at="2017-09-25T07:18:24Z" finished-at="2017-09-25T07:18:24Z">
+      <class name="com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest">
+        <test-method status="PASS" signature="CountTupleCorrectly()[pri:0, instance:com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest@6bf256fa]" name="CountTupleCorrectly" duration-ms="40" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- CountTupleCorrectly -->
+        <test-method status="PASS" signature="cleanupCorrectly()[pri:0, instance:com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest@6bf256fa]" name="cleanupCorrectly" duration-ms="3" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- cleanupCorrectly -->
+        <test-method status="PASS" signature="illegalLevelNumber()[pri:0, instance:com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest@6bf256fa]" name="illegalLevelNumber" duration-ms="0" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <exception class="java.lang.IllegalArgumentException">
+            <full-stacktrace>
+              <![CDATA[java.lang.IllegalArgumentException
+	at com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt.<init>(HierarchyXLevelSpaceSavingBolt.java:29)
+	at com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest.illegalLevelNumber(HierarchyXLevelSpaceSavingBoltTest.java:39)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:115)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:205)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:108)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:111)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.IllegalArgumentException -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- illegalLevelNumber -->
+        <test-method status="PASS" signature="parsingCorrectly()[pri:0, instance:com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest@6bf256fa]" name="parsingCorrectly" duration-ms="1" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- parsingCorrectly -->
+        <test-method status="PASS" signature="shouldAckIfTupleIsReceived()[pri:0, instance:com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest@6bf256fa]" name="shouldAckIfTupleIsReceived" duration-ms="0" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldAckIfTupleIsReceived -->
+      </class> <!-- com.rhhh.bolts.HierarchyXLevelSpaceSavingBoltTest -->
+      <class name="com.rhhh.spouts.IPReaderSpoutTest">
+        <test-method status="PASS" signature="FileInputTest()[pri:0, instance:com.rhhh.spouts.IPReaderSpoutTest@340f438e]" name="FileInputTest" duration-ms="269" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- FileInputTest -->
+        <test-method status="PASS" signature="MultipleFileInputTest()[pri:0, instance:com.rhhh.spouts.IPReaderSpoutTest@340f438e]" name="MultipleFileInputTest" duration-ms="7" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- MultipleFileInputTest -->
+        <test-method status="PASS" signature="SpoutNoArgsInConstructorTest()[pri:0, instance:com.rhhh.spouts.IPReaderSpoutTest@340f438e]" name="SpoutNoArgsInConstructorTest" duration-ms="1" started-at="2017-09-25T10:18:24Z" finished-at="2017-09-25T10:18:24Z">
+          <exception class="java.lang.IllegalArgumentException">
+            <full-stacktrace>
+              <![CDATA[java.lang.IllegalArgumentException
+	at com.rhhh.spouts.IPReaderSpout.<init>(IPReaderSpout.java:41)
+	at com.rhhh.spouts.IPReaderSpoutTest.SpoutNoArgsInConstructorTest(IPReaderSpoutTest.java:19)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:84)
+	at org.testng.internal.Invoker.invokeMethod(Invoker.java:714)
+	at org.testng.internal.Invoker.invokeTestMethod(Invoker.java:901)
+	at org.testng.internal.Invoker.invokeTestMethods(Invoker.java:1231)
+	at org.testng.internal.TestMethodWorker.invokeTestMethods(TestMethodWorker.java:127)
+	at org.testng.internal.TestMethodWorker.run(TestMethodWorker.java:111)
+	at org.testng.TestRunner.privateRun(TestRunner.java:767)
+	at org.testng.TestRunner.run(TestRunner.java:617)
+	at org.testng.SuiteRunner.runTest(SuiteRunner.java:334)
+	at org.testng.SuiteRunner.runSequentially(SuiteRunner.java:329)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:291)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:240)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1224)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1149)
+	at org.testng.TestNG.run(TestNG.java:1057)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:115)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.executeMulti(TestNGDirectoryTestSuite.java:205)
+	at org.apache.maven.surefire.testng.TestNGDirectoryTestSuite.execute(TestNGDirectoryTestSuite.java:108)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:111)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:203)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:155)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+]]>
+            </full-stacktrace>
+          </exception> <!-- java.lang.IllegalArgumentException -->
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- SpoutNoArgsInConstructorTest -->
+      </class> <!-- com.rhhh.spouts.IPReaderSpoutTest -->
+    </test> <!-- Surefire test -->
+  </suite> <!-- Surefire suite -->
+</testng-results>
