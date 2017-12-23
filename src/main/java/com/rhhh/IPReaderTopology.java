@@ -37,8 +37,11 @@ public class IPReaderTopology {
         builder.setBolt("level-3", new HierarchyXLevelSpaceSavingBolt(3)).shuffleGrouping("ip-reader-spout", "StreamForL3");
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
+        ReporterBolt.setTheta(0.005);
+        HierarchyXLevelSpaceSavingBolt.setEpsilon(100);
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
         DBUtils.disconnectDB();
+        System.out.print("eps = " + HierarchyXLevelSpaceSavingBolt.epsilon + ". theta = "+ ReporterBolt.theta);
     }
 }

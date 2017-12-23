@@ -26,7 +26,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private int ips_received;
     private String ThreadID;
     private Random rand;
-    public static int updateDBFrequency = 100; //todo: return to 10000
+    public static long updateDBFrequency = 10000; //todo: return to 10000
     public static int epsilon = 1000;
 
     public static void setEpsilon(int eps){
@@ -38,6 +38,10 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
             throw new IllegalArgumentException();
         Level = level;
         ips_received = 0;
+    }
+
+    public static void setQuery_frequency(long query_frequency) {
+        HierarchyXLevelSpaceSavingBolt.updateDBFrequency = query_frequency;
     }
 
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
