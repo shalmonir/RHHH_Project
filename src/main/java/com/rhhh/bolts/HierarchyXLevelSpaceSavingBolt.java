@@ -1,5 +1,6 @@
 package com.rhhh.bolts;
 import com.clearspring.analytics.stream.StreamSummary;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 import com.rhhh.DBUtils;
 import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
@@ -13,6 +14,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Random;
 
+import static java.lang.System.exit;
+
 /**
  * Created by Nir on 06/05/2017.
  */
@@ -24,9 +27,9 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private String[] ipAddressArray;
     private int Level;
     private int ips_received;
-    private String ThreadID;
     public static long updateDBFrequency = 10000;
     public static int epsilon = 1000;
+    private static Connection conn;
 
     public static void setEpsilon(int eps){
         epsilon = eps;
@@ -46,7 +49,12 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     public void prepare(Map map, TopologyContext topologyContext, OutputCollector collector) {
         this.counters = new StreamSummary<>(epsilon);
         this.collector = collector;
-        ThreadID = Thread.currentThread().getName();    //for PID(same for all bolts): ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+        try {
+            conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            exit(0);
+        }
     }
 
     public void execute(Tuple input) {
@@ -81,15 +89,14 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         return null;
     }
 
-    public StreamSummary<String> getCounters(){ return counters;}
-
     private void updateMainFlow(){
         try {
-            Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
             Statement stmt = conn.createStatement();
             String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
             stmt.executeUpdate(sql_cmd);
-        }  catch (Exception e) {
+        } catch (MySQLNonTransientConnectionException e){
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

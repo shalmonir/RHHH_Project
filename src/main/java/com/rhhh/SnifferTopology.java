@@ -14,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
+import static com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt.setQuery_frequency;
+
 /**
  * Created by root on 9/24/17.
  */
@@ -44,7 +46,7 @@ public class SnifferTopology  {
         if(args.length != 0){
             HierarchyXLevelSpaceSavingBolt.setEpsilon(Integer.parseInt(args[0]));
             ReporterBolt.setTheta(Double.parseDouble(args[1]));
-            HierarchyXLevelSpaceSavingBolt.updateDBFrequency = Integer.parseInt(args[2]);
+            setQuery_frequency(Integer.parseInt(args[2]));
         }
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());

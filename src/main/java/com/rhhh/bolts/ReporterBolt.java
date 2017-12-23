@@ -32,6 +32,7 @@ public class ReporterBolt implements IRichBolt {
     private PrintWriter writer;
     private StreamSummary<String>[] current_counters = null;
     long startTime;
+    Connection conn;
 
     public static void setTheta(double theta){
         ReporterBolt.theta = theta;
@@ -64,14 +65,20 @@ public class ReporterBolt implements IRichBolt {
             e.printStackTrace();
             exit(0);
         }
+        try {
+            conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
+            stmt = conn.createStatement();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            exit(0);
+        }
         startTime = System.currentTimeMillis();
     }
 
     @Override
     public void execute(Tuple tuple) {
         try {
-            Connection conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
-            stmt = conn.createStatement();
+            conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
             Map<String,Long> hhhmap = getHeavyHitters(1);
             if(hhhmap != null) {
                 long timePast = (System.currentTimeMillis() - startTime) / 1000;

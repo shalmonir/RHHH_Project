@@ -66,6 +66,7 @@ public class DBUtils {
                 sql_cmd = "CREATE TABLE Level"+ level + " (id BIGINT AUTO_INCREMENT NOT NULL, HH LONGTEXT, total BIGINT UNSIGNED, PRIMARY KEY (id))";
                 stmt.executeUpdate(sql_cmd);
             }
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
             System.exit(1);

@@ -11,6 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.FailedLoginException;
 
+import static com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt.setEpsilon;
+import static com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt.setQuery_frequency;
+import static com.rhhh.bolts.ReporterBolt.setTheta;
+
 /**
  * Created by root on 9/24/17.
  */
@@ -37,8 +41,9 @@ public class IPReaderTopology {
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
         if(args.length != 0) {
-            HierarchyXLevelSpaceSavingBolt.setEpsilon(1000/*Integer.parseInt(args[0])*/);
-            ReporterBolt.setTheta(0.005 /*Double.parseDouble(args[1])*/);
+            setEpsilon(1000/*Integer.parseInt(args[0])*/);
+            setTheta(0.005 /*Double.parseDouble(args[1])*/);
+            setQuery_frequency(100/*Integer.parseInt(args[2])*/);
         }
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
