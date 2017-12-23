@@ -29,7 +29,6 @@ public class SnifferTopology  {
             System.out.println("Failed to connect to db");
             System.exit(1);
         }
-        long startTime = System.currentTimeMillis();
         Logger topology_log = LoggerFactory.getLogger(SnifferTopology.class);
         topology_log.info("RHHHTopology started");
         Config config = new Config();

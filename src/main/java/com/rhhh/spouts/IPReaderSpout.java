@@ -1,5 +1,4 @@
 package com.rhhh.spouts;
-import com.rhhh.bolts.HierarchyXLevelSpaceSavingBolt;
 import org.apache.storm.spout.SpoutOutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.IRichSpout;
@@ -108,15 +107,10 @@ public class IPReaderSpout implements IRichSpout {
         spout_log.info("IPReaderSpout Closed Input File. Counter = " + counter);
         copy_log_in_format();
         while(true){}
-//        System.exit(1);
     }
 
     private void copy_log_in_format() {
 
-    }
-
-    public boolean isDistributed() {
-        return true;
     }
 
     public void activate() {

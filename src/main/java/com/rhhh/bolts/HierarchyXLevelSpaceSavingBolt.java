@@ -12,7 +12,6 @@ import org.apache.storm.tuple.Values;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Random;
 
 import static java.lang.System.exit;
 
@@ -26,9 +25,10 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private String ipAddress;
     private String[] ipAddressArray;
     private int Level;
+    private boolean[] hasInitiatedDB;
     private int ips_received;
     public static long updateDBFrequency = 10000;
-    public static int epsilon = 1000;
+    public static int epsilon = 100;
     private static Connection conn;
 
     public static void setEpsilon(int eps){
@@ -40,6 +40,8 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
             throw new IllegalArgumentException();
         Level = level;
         ips_received = 0;
+        hasInitiatedDB = new boolean[4];
+        Arrays.fill(hasInitiatedDB, Boolean.FALSE);
     }
 
     public static void setQuery_frequency(long query_frequency) {
@@ -92,7 +94,13 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private void updateMainFlow(){
         try {
             Statement stmt = conn.createStatement();
-            String sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
+            String sql_cmd = "";
+            if(hasInitiatedDB[Level - 1]){
+                sql_cmd = "UPDATE Level" + Level + " SET HH='" + Arrays.toString(counters.toBytes())+ "' , total=" + ips_received + " WHERE id=1";
+            } else {
+                hasInitiatedDB[Level - 1] = true;
+                sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
+            }
             stmt.executeUpdate(sql_cmd);
         } catch (MySQLNonTransientConnectionException e){
             e.printStackTrace();

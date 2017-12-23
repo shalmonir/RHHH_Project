@@ -1,17 +1,16 @@
 package com.rhhh;
 
-import clojure.lang.Range;
-
 import javax.security.auth.login.FailedLoginException;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * Created by root on 25/09/17.
  */
 public class DBUtils {
-    // used: sudo apt-get install mysql-server
-    public static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
     public static final String DB_URL = "jdbc:mysql://localhost/";
     public static final String RHHH_URL = "jdbc:mysql://localhost/RHHH";
     public static final String USER = "root";
@@ -53,7 +52,7 @@ public class DBUtils {
     }
 
     public static void createTablesForLevels() throws FailedLoginException {
-        Statement stmt = null;
+        Statement stmt;
         try {
             Connection conn = DriverManager.getConnection(RHHH_URL, USER, PASS);
             stmt = conn.createStatement();
@@ -72,17 +71,6 @@ public class DBUtils {
             System.exit(1);
         }
         System.out.println("Success!\n");
-    }
-
-    public static void DBInit(){
-        try {
-            ConnectDB();
-            createTablesForLevels();
-        } catch (FailedLoginException e) {
-            e.printStackTrace();
-            System.out.println("Failed to connect to db");
-            System.exit(1);
-        }
     }
 
     public static void disconnectDB(){
