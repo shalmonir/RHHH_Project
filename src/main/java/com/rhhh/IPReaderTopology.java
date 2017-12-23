@@ -31,7 +31,6 @@ public class IPReaderTopology {
         Logger topology_log = LoggerFactory.getLogger(IPReaderTopology.class);
         topology_log.info("RHHHTopology started");
         Config config = new Config();
-        config.setDebug(true);
         config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
         TopologyBuilder builder = new TopologyBuilder();
         builder.setSpout("ip-reader-spout", new IPReaderSpout(true, args));
@@ -41,9 +40,9 @@ public class IPReaderTopology {
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
         if(args.length != 0) {
-            setEpsilon(1000);
+            setEpsilon(100);
             setTheta(0.005);
-            setQuery_frequency(10000);
+            setQuery_frequency(100000);
         }
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());

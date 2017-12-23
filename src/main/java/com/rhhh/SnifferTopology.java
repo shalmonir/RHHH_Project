@@ -32,7 +32,6 @@ public class SnifferTopology  {
         Logger topology_log = LoggerFactory.getLogger(SnifferTopology.class);
         topology_log.info("RHHHTopology started");
         Config config = new Config();
-        config.setDebug(true);
         config.put(Config.TOPOLOGY_MAX_SPOUT_PENDING, 1);
 
         TopologyBuilder builder = new TopologyBuilder();

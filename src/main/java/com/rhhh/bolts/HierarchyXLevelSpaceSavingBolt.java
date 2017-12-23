@@ -25,7 +25,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private String ipAddress;
     private String[] ipAddressArray;
     private int Level;
-    private boolean[] hasInitiatedDB;
+    public static boolean[] hasInitiatedDB;
     private int ips_received;
     public static long updateDBFrequency = 10000;
     public static int epsilon = 100;
@@ -62,7 +62,10 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     public void execute(Tuple input) {
         try {
             ipAddress = "";
-            ipAddressArray = input.getValue(0).toString().replace("/", "").split("\\.");
+            if(input == null) return;
+            Object x = input.getValue(0);
+            if(x == null) return;
+            ipAddressArray = x.toString().replace("/", "").split("\\.");
             int i = 0;
             while (i < Level - 1) {
                 ipAddress = ipAddress + ipAddressArray[i++] + ".";
@@ -101,6 +104,7 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
                 hasInitiatedDB[Level - 1] = true;
                 sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
             }
+
             stmt.executeUpdate(sql_cmd);
         } catch (MySQLNonTransientConnectionException e){
             e.printStackTrace();
