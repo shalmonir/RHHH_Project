@@ -59,7 +59,6 @@ public class ReporterBolt implements IRichBolt {
             PrintWriter writerHtml = new PrintWriter("/tmp/rhhh/display.html", "UTF-8");
             writerHtml.print(HtmlUtility.html);
             writerHtml.flush();
-//            Files.copy(new File("display.html").toPath(), new File("/tmp/rhhh/display.html").toPath(), REPLACE_EXISTING);
         } catch (IOException e) {
             System.err.println("Failed to copy html file to your tmp/rhhh");
             e.printStackTrace();
@@ -81,13 +80,13 @@ public class ReporterBolt implements IRichBolt {
             conn = DriverManager.getConnection(DBUtils.RHHH_URL, DBUtils.USER, DBUtils.PASS);
             Map<String,Long> hhhmap = getHeavyHitters(1);
             if(hhhmap != null) {
-                long timePast = (System.currentTimeMillis() - startTime) / 1000;
+                long timePast = (System.currentTimeMillis() - startTime);
                 writer.println("Total = " + N + "Time since started = " + timePast + ". HH list: " + hhhmap + "\n");
                 writer.flush();
                 String formatStr = "%-20s %-20s\n";
                 PrintWriter writer_latest = new PrintWriter("/tmp/rhhh/Latest.txt", "UTF-8");
                 writer_latest.println("Total Packages = " + N + ", Number of HH = "+ hhhmap.size() +
-                        " , Time since started = " + timePast + " seconds.\n Here are the heavy hitters: \n");
+                        " , Time since started = " + timePast + " milli-seconds.\n Here are the heavy hitters: \n");
                 writer_latest.write(String.format(formatStr,"IP prefix", "Hits"));
                 for(Map.Entry<String, Long> entry : hhhmap.entrySet()){
                     writer_latest.write(String.format(formatStr,entry.getKey(), entry.getValue()));
@@ -200,23 +199,40 @@ public class ReporterBolt implements IRichBolt {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    private void getStreamSummaryForLevelAndUpdateTotal() throws SQLException, IOException, ClassNotFoundException {
+    private void getStreamSummaryForLevelAndUpdateTotal() {
         long sum = 0;
-        for (int i = 1; i <= 4; i++) {
-            String sqlSelectTotalStreamCommand = "SELECT total, HH FROM Level"+i+" ORDER BY id desc LIMIT 1";
-            ResultSet res = stmt.executeQuery(sqlSelectTotalStreamCommand);
-            res.next();
-            sum += Long.parseLong(res.getString(1));
-            String byteArrayAsString = res.getString(2);
-            String[] byteArrayAsStringArray = byteArrayAsString.substring(1,byteArrayAsString.length()-1).split(",");
-            int length = byteArrayAsStringArray.length;
-            byte[] byteArray = new byte[length];
-            for (int j = 0; j < length; j++) {
-                byteArray[j] = Byte.parseByte(byteArrayAsStringArray[j].trim());
-            }
-            current_counters[i] = new StreamSummary<>(byteArray);
+        try {
+            for (int i = 1; i <= 4; i++) {
+                Thread.sleep(5);
+                String sqlSelectTotalStreamCommand = "SELECT total, HH FROM Level" + i + " ORDER BY id desc LIMIT 1";
+                ResultSet res = stmt.executeQuery(sqlSelectTotalStreamCommand);
+                res.next();
+                String total;
+                try{
+                    total = res.getString(1);
+                } catch (SQLException e){
+                    return;
+                }
+                sum += Long.parseLong(total);
+                String byteArrayAsString = res.getString(2);
+                String[] byteArrayAsStringArray = byteArrayAsString.substring(1, byteArrayAsString.length() - 1).split(",");
+                int length = byteArrayAsStringArray.length;
+                byte[] byteArray = new byte[length];
+                for (int j = 0; j < length; j++) {
+                    byteArray[j] = Byte.parseByte(byteArrayAsStringArray[j].trim());
+                }
+                current_counters[i] = new StreamSummary<>(byteArray);
         }
-        N = sum;
+            N = sum;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
 

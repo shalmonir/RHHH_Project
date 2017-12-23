@@ -78,7 +78,7 @@ public class IPReaderSpout implements IRichSpout {
         if(finished_all_files){
             this.collector.emit(streams.get(current_stream), new Values(null));
         }
-        this.collector.emit(streams.get(current_stream), new Values(line));
+
         current_stream = (current_stream + 1) % 4;
         counter++;
         skip = rand.nextInt(10);
@@ -92,7 +92,7 @@ public class IPReaderSpout implements IRichSpout {
         }
         if(counter % queryFrequency == 0)
             collector.emit("Reporter",new Values("null"));
-
+        this.collector.emit(streams.get(current_stream), new Values(line));
         for(int i=0; i < 10 - skip; i++)
             try {
                 buffer.readLine();

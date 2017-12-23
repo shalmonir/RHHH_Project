@@ -102,7 +102,7 @@ public class SnifferSpout implements IRichSpout {
                 if(counter % queryFrequency == 0)
                     collector.emit("Reporter",new Values("null"));
                 for(int i=0; i < 10 - skip; i++)
-                    v4 = p.get(IpV4Packet.class);
+                    p.get(IpV4Packet.class);
             }
         } catch (PcapNativeException e) {
             e.printStackTrace();
