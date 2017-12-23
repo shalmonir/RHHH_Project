@@ -14,10 +14,7 @@ import org.pcap4j.util.NifSelector;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -35,6 +32,8 @@ public class SnifferSpout implements IRichSpout {
     private int current_stream = 0;
     private List<String> streams = Arrays.asList("StreamForL1", "StreamForL2", "StreamForL3", "StreamForL4");
     private int queryFrequency = 50000;
+    private Random rand;
+    private int skip;
 
     @Override
     public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector) {
@@ -64,6 +63,7 @@ public class SnifferSpout implements IRichSpout {
         for (PcapAddress addr : nif.getAddresses()){
             localAddresses.add(addr.getAddress().toString());
         }
+        rand = new Random();
     }
 
     @Override
@@ -84,10 +84,13 @@ public class SnifferSpout implements IRichSpout {
     @Override
     public void nextTuple() {
         Packet p = null;
+        skip = rand.nextInt(10);
         try {
             p = handle.getNextPacketEx();
             counter++;
             IpV4Packet v4 = p.get(IpV4Packet.class);
+            for(int i=0; i < skip; i++)
+                v4 = p.get(IpV4Packet.class);
             if (v4 != null) {
                 srcAdr = v4.getHeader().getSrcAddr();
                 if (localAddresses.contains(srcAdr.toString())){
@@ -98,7 +101,8 @@ public class SnifferSpout implements IRichSpout {
                 current_stream = (current_stream + 1) % 4;
                 if(counter % queryFrequency == 0)
                     collector.emit("Reporter",new Values("null"));
-
+                for(int i=0; i < 10 - skip; i++)
+                    v4 = p.get(IpV4Packet.class);
             }
         } catch (PcapNativeException e) {
             e.printStackTrace();

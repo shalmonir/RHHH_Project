@@ -12,10 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -36,6 +33,8 @@ public class IPReaderSpout implements IRichSpout {
     BufferedReader buffer;
     private boolean finished_all_files;
     private int queryFrequency = 50000;
+    private Random rand;
+    private int skip;
 
 
     public IPReaderSpout(boolean is_files_based, String[] input_files_list) {
@@ -48,6 +47,7 @@ public class IPReaderSpout implements IRichSpout {
         current_file_index = 0;
         finished_all_files = false;
         spout_log.info("IPReaderSpout created successfully");
+        rand = new Random();
     }
 
     public void declareOutputFields(OutputFieldsDeclarer declarer) {
@@ -82,8 +82,10 @@ public class IPReaderSpout implements IRichSpout {
         this.collector.emit(streams.get(current_stream), new Values(line));
         current_stream = (current_stream + 1) % 4;
         counter++;
+        skip = rand.nextInt(10);
         try {
-            line = buffer.readLine();
+            for(int i=0; i < skip; i++)
+                line = buffer.readLine();
         } catch (IOException e) {
             spout_log.info("Caught IOException when reading file" + Ip_source_files[current_file_index]);
             e.printStackTrace();
@@ -91,6 +93,13 @@ public class IPReaderSpout implements IRichSpout {
         }
         if(counter % queryFrequency == 0)
             collector.emit("Reporter",new Values("null"));
+
+        for(int i=0; i < 10 - skip; i++)
+            try {
+                buffer.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
     }
 
     public void close() {

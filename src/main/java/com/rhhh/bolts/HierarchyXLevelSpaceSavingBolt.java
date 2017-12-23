@@ -25,7 +25,6 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
     private int Level;
     private int ips_received;
     private String ThreadID;
-    private Random rand;
     public static long updateDBFrequency = 10000; //todo: return to 10000
     public static int epsilon = 1000;
 
@@ -48,14 +47,10 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         this.counters = new StreamSummary<>(epsilon);
         this.collector = collector;
         ThreadID = Thread.currentThread().getName();    //for PID(same for all bolts): ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
-        rand = new Random();
     }
 
     public void execute(Tuple input) {
         try {
-            if(!some_probability_func()){
-                return;
-            }
             ipAddress = "";
             ipAddressArray = input.getValue(0).toString().replace("/", "").split("\\.");
             int i = 0;
@@ -75,9 +70,6 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
         }
     }
 
-    private boolean some_probability_func() {
-        return rand.nextInt(10) == 1;
-    }
 
     public void cleanup() {
         this.collector.emit(new Values(ips_received, counters));

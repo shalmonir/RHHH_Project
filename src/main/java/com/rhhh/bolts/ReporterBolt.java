@@ -82,9 +82,7 @@ public class ReporterBolt implements IRichBolt {
                 writer_latest.println("Total Packages = " + N + ", Number of HH = "+ hhhmap.size() +
                         " , Time since started = " + timePast + " seconds.\n Here are the heavy hitters: \n");
                 writer_latest.write(String.format(formatStr,"IP prefix", "Hits"));
-//                writer_latest.println("IP prefix \t\t Hits\n");
                 for(Map.Entry<String, Long> entry : hhhmap.entrySet()){
-//                    writer_latest.println(entry.getKey() + "\t\t" + entry.getValue());
                     writer_latest.write(String.format(formatStr,entry.getKey(), entry.getValue()));
                 }
                 writer_latest.flush();
