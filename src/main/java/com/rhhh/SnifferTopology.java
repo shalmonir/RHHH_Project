@@ -41,16 +41,13 @@ public class SnifferTopology  {
         builder.setBolt("level-3", new HierarchyXLevelSpaceSavingBolt(3)).shuffleGrouping("ip-reader-spout", "StreamForL3");
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
-        if(args.length == 0) {
-            //set default values - in RHHH
-        } else {
+        if(args.length != 0){
             HierarchyXLevelSpaceSavingBolt.setEpsilon(Integer.parseInt(args[0]));
             ReporterBolt.setTheta(Double.parseDouble(args[1]));
+            HierarchyXLevelSpaceSavingBolt.updateDBFrequency = Integer.parseInt(args[2]);
         }
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
-        long endTime = System.currentTimeMillis();
-        topology_log.info("RHHHTopology Finished. Total time taken = " + (endTime - startTime));
         DBUtils.disconnectDB();
     }
 }

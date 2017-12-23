@@ -24,7 +24,6 @@ public class IPReaderTopology {
             System.out.println("Failed to connect to db");
             System.exit(1);
         }
-        long startTime = System.currentTimeMillis();
         Logger topology_log = LoggerFactory.getLogger(IPReaderTopology.class);
         topology_log.info("RHHHTopology started");
         Config config = new Config();
@@ -37,11 +36,12 @@ public class IPReaderTopology {
         builder.setBolt("level-3", new HierarchyXLevelSpaceSavingBolt(3)).shuffleGrouping("ip-reader-spout", "StreamForL3");
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
-        ReporterBolt.setTheta(0.005);
-        HierarchyXLevelSpaceSavingBolt.setEpsilon(100);
+        if(args.length != 0) {
+            HierarchyXLevelSpaceSavingBolt.setEpsilon(1000/*Integer.parseInt(args[0])*/);
+            ReporterBolt.setTheta(0.005 /*Double.parseDouble(args[1])*/);
+        }
         LocalCluster cluster = new LocalCluster();
         cluster.submitTopology("RHHHTopology", config, builder.createTopology());
         DBUtils.disconnectDB();
-        System.out.print("eps = " + HierarchyXLevelSpaceSavingBolt.epsilon + ". theta = "+ ReporterBolt.theta);
     }
 }
