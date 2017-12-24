@@ -80,7 +80,7 @@ public class IPReaderSpout implements IRichSpout {
         }
 
         current_stream = (current_stream + 1) % 4;
-        counter++;
+        counter+=10;
         skip = rand.nextInt(10);
         try {
             for(int i=0; i < skip; i++)
