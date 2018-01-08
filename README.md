@@ -7,7 +7,8 @@ Download the Jar from https://www.dropbox.com/s/fuutdf698w6gk8c/RHHH_project-1.1
 OVS rule definition:
 1.	Open new Terminal
 2.	insert the following command: “ovs-ofctl add-flow *virtual_switch* action=normal, output:*VM_port_number*”
-For example: ```# ovs-ofctl add-flow s1 action=normal, output:1 ```
+For example: 
+<br/>```# ovs-ofctl add-flow s1 action=normal, output:1 ``` <br/>
 Where ‘VM_port_number’ represent the supervisor’s VM that run the software configured income port for this specific use.
 Will reroute the traffic from virtual switch s1 to port 8000 on vm
 3.	Open new Terminal, go to command prompt and run the Jar by inserting the following command: 
