@@ -104,7 +104,6 @@ public class HierarchyXLevelSpaceSavingBolt implements IRichBolt {
                 hasInitiatedDB[Level - 1] = true;
                 sql_cmd = "INSERT INTO Level" + Level + " (HH, total) VALUES ('" + Arrays.toString(counters.toBytes()) + "', " + ips_received + ")";
             }
-
             stmt.executeUpdate(sql_cmd);
         } catch (MySQLNonTransientConnectionException e){
             e.printStackTrace();

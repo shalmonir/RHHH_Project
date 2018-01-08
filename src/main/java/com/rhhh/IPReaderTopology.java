@@ -40,7 +40,7 @@ public class IPReaderTopology {
         builder.setBolt("level-4", new HierarchyXLevelSpaceSavingBolt(4)).shuffleGrouping("ip-reader-spout", "StreamForL4");
         builder.setBolt("Reporter", new ReporterBolt()).shuffleGrouping("ip-reader-spout","Reporter");
         if(args.length != 0) {
-            setEpsilon(100);
+            setEpsilon(1000);
             setTheta(0.005);
             setQuery_frequency(100000);
         }

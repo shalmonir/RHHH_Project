@@ -76,7 +76,7 @@ public class IPReaderSpout implements IRichSpout {
             open_next_file();
         }
         if(finished_all_files){
-            this.collector.emit(streams.get(current_stream), new Values(null));
+            close();
         }
 
         current_stream = (current_stream + 1) % 4;
@@ -103,6 +103,7 @@ public class IPReaderSpout implements IRichSpout {
 
     public void close() {
         Date date = new Date();
+        collector.emit("Reporter",new Values("null"));
         spout_log.info("Spout Finish time = " + dateFormat.format(date));
         spout_log.info("IPReaderSpout Closed Input File. Counter = " + counter);
         copy_log_in_format();
@@ -158,6 +159,4 @@ public class IPReaderSpout implements IRichSpout {
             current_file_index++;
         }
     }
-
-    public boolean is_finished_all_files(){ return finished_all_files; }
 }

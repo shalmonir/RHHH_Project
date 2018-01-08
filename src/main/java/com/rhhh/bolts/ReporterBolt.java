@@ -178,9 +178,7 @@ public class ReporterBolt implements IRichBolt {
     }
 
     @Override
-    public void cleanup() {
-
-    }
+    public void cleanup() {}
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
