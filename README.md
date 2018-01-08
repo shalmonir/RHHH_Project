@@ -3,8 +3,8 @@
 ![N|Solid](https://cdn2.hubspot.net/hubfs/486579/lp/academy/sniffer.png)
 
 ## Get started
-- Download the Jar from https://www.dropbox.com/s/fuutdf698w6gk8c/RHHH_project-1.1.0-jar-with-dependencies.jar?dl=0
--	OVS rule definition:
+Download the Jar from https://www.dropbox.com/s/fuutdf698w6gk8c/RHHH_project-1.1.0-jar-with-dependencies.jar?dl=0
+OVS rule definition:
 1.	Open new Terminal
 2.	insert the following command: “ovs-ofctl add-flow *virtual_switch* action=normal, output:*VM_port_number*”
 For example: 
