@@ -1,6 +1,0 @@
-Configuring TestNG with: TestNG652Configurator
-567  [main] INFO  c.r.s.IPReaderSpout - IPReaderSpout created successfully
-569  [main] INFO  c.r.s.IPReaderSpout - Spout Start time = 13:06:21
-577  [main] INFO  c.r.s.IPReaderSpout - IPReaderSpout created successfully
-577  [main] INFO  c.r.s.IPReaderSpout - Spout Start time = 13:06:21
-584  [main] ERROR c.r.s.IPReaderSpout - No files were given for spout when configured as files based

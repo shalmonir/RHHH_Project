@@ -1,5 +1,0 @@
-/home/storm/apache-storm-1.1.0/examples/RHHH/src/test/java/com/rhhh/GeneralTestForRealFile.java
-/home/storm/apache-storm-1.1.0/examples/RHHH/src/test/java/com/rhhh/StatisticsCollector.java
-/home/storm/apache-storm-1.1.0/examples/RHHH/src/test/java/com/rhhh/spouts/IPReaderSpoutTest.java
-/home/storm/apache-storm-1.1.0/examples/RHHH/src/test/java/com/rhhh/manager/RHHHSpaceSavingmanagerTest.java
-/home/storm/apache-storm-1.1.0/examples/RHHH/src/test/java/com/rhhh/bolts/HierarchyXLevelSpaceSavingBoltTest.java
