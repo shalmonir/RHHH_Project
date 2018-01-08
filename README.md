@@ -8,13 +8,15 @@ OVS rule definition:
 1.	Open new Terminal
 2.	insert the following command: “ovs-ofctl add-flow *virtual_switch* action=normal, output:*VM_port_number*”
 For example: 
-ovs-ofctl add-flow s1 action=normal, output:1  
+```# ovs-ofctl add-flow s1 action=normal, output:1 ```
 Where ‘VM_port_number’ represent the supervisor’s VM that run the software configured income port for this specific use.
 Will reroute the traffic from virtual switch s1 to port 8000 on vm
-3.	Open new Terminal, go to command prompt and run the Jar by inserting the following command: “sudo path_to_jar/RHHH_project-1.1.0-jar-with-dependencies.jar *theta *epsilon *update_frequency”
+3.	Open new Terminal, go to command prompt and run the Jar by inserting the following command: 
+.```# sudo path_to_jar/RHHH_project-1.1.0-jar-with-dependencies.jar *theta *epsilon 
+*update_frequency ```
 *see sector: command line parameters
 4.	Choose from the list below the specified device to listen to (your network device)
-5.	Go to your tmp directory, there will be a new sub folder called ‘rhhh’, in the path ‘/tmp/rhhh’ the result will be saved, where the readable report will be the file ‘display.html’ (open in any browser) and watch the result.
+5.	Go to your tmp directory, there will be a new sub folder called ‘rhhh’, in the path ```/tmp/rhhh``` the result will be saved, where the readable report will be the file ```display.html``` (open in any browser) and watch the result.
 
 ## Next step: read the results
 After you lunch the RHHH SW, you will pop an html page on your default browser.
