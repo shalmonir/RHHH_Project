@@ -22,7 +22,7 @@ After you lunch the RHHH SW, you will pop an html page on your default browser.
 On the first sector, you can see the specific Current heavy hitters (see picture 1), where the IP prefixes shown on the left column and the number of hits at the right. The numbers that written at the file are the IP prefix of the domains that has discovered as Heavy hitters. Meaning that they in charge of, approximately, more traffic percentage then the threshold (of the whole traffic). 
 You can see additional information above; the time past we started the run, total number of HH and the number of packages that we used in the analyses. 
 
- >***put here the picture
+![N|Solid](RHHH_Project/RHHH_log.png)
 >Picture 1
 
 ## Command line parameters
