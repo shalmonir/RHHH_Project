@@ -30,5 +30,9 @@ The two arguments, that are not mandatory, are: epsilon, theta.
 Epsilon represent the size of the table where we keep the information about the traffic behavior of IP prefixes. For each level in the hierarchy (1 to 4) we hold one table. The bigger the epsilon, the smaller out error is. For example, for Epsilon=100 the table will contain at most 100 prefixes. 
 Theta represent the threshold. This is the percentage of total traffic, which define a prefix as HH. For example, for theta=0.2 (20%) and traffic of 1M packets (after we filtered 1 packet out of 10 randomly) - a prefix will be considered HH if we sampled at least 200k packets* that sent by that prefix.
 *this number is not accurate, there is dependent reduce according to the level in hierarchy and counters in the sub-prefixes. For further reading refer to the article. 
+
+## Video Demo
+Watch the demo: https://typito.com/share/zDXrppJJ
+
 ## Support 
 For any issue feel free to contact us through github
